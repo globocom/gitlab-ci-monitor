@@ -9,6 +9,7 @@
 
 <body>
 	<div id="app">
+    <div v-show="loading" class="loader"></div>
     {{ message }}
     <ul>
       <li v-for="project in projects">
@@ -16,18 +17,40 @@
       </li>
     </ul>
 
-    <div class="projects">
+    <div class="projects flex-container">
       <div v-for="build in builds" class="build">
-        {{ build.project }}
         {{ build.author }}
-        {{ build.status }}
+      </div>
+      <div class="build">
+        <div class="project">
+          Transmissions
+        </div>
+      </div>
+      <div class="build">
+        Luiz Filho
+      </div>
+      <div class="build">
+        Luiz Filho
+      </div>
+      <div class="build">
+        Luiz Filho
+      </div>
+      <div class="build">
+        Luiz Filho
+      </div>
+      <div class="build">
+        Luiz Filho
+      </div>
+      <div class="build">
+        Luiz Filho
       </div>
     </div>
 	</div>
 
 
-  <script src="https://cdn.jsdelivr.net/vue/1.0.27/vue.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="js/vue.min.js"></script>
+  <script src="js/axios.min.js"></script>
+  <script src="js/moment.min.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/app.js"></script>
 </body>

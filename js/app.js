@@ -1,9 +1,9 @@
 var gitlabHost = "https://gitlab.globoi.com/api/v3"
-var repositories = getParameterByName("projects").split(",")
 
+var token = getParameterByName("token")
 
 axios.defaults.baseURL = 'https://gitlab.globoi.com/api/v3'
-axios.defaults.headers.common['PRIVATE-TOKEN'] = getParameterByName("token")
+axios.defaults.headers.common['PRIVATE-TOKEN'] = token
 
 var app = new Vue({
   el: '#app',
@@ -11,9 +11,16 @@ var app = new Vue({
     message: 'Hello Vue.js!',
     projects: null,
     builds: [],
-    token: getParameterByName("token")
+    token: getParameterByName("token"),
+    repositories: [],
+    loading: false
   },
   created: function() {
+    repositories = getParameterByName("projects")
+    if (repositories == null || token == null) {
+      return
+    }
+    this.repositories = repositories.split(",")
     this.fetchProjecs()
 
     var self = this
@@ -24,11 +31,12 @@ var app = new Vue({
   methods: {
     fetchProjecs: function() {
       var self = this
+      self.loading = true
       axios.get('/projects?per_page=100')
         .then(function (response) {
+          self.loading = false
           self.projects = response.data.filter(function(p){
-            console.log(p.name)
-            return repositories.contains(p.name)
+            return self.repositories.contains(p.name)
           })
         })
         .catch(onError);
@@ -70,5 +78,6 @@ var app = new Vue({
 
 
 var onError = function (error) {
+  app.loading = false
   console.log(error);
 }
