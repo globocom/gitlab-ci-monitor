@@ -10,12 +10,14 @@ var app = new Vue({
     token: null,
     gitlab: null,
     repositories: null,
-    loading: false
+    loading: false,
+    invalidConfig: false
   },
   created: function() {
     this.loadConfig()
 
     if (!this.configValid()) {
+      this.invalidConfig = true;
       return
     }
 
@@ -48,7 +50,6 @@ var app = new Vue({
       return valid
     },
     setupDefaults: function() {
-      console.log("https://" + this.gitlab + "/api/v3")
       axios.defaults.baseURL = "https://" + this.gitlab + "/api/v3"
       axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
     },
@@ -69,7 +70,6 @@ var app = new Vue({
     },
     fetchBuilds: function() {
       var self = this
-      console.log(this.builds)
       this.projects.forEach(function(p){
         axios.get('/projects/' + p.id + '/builds')
           .then(function (response) {
@@ -83,7 +83,8 @@ var app = new Vue({
                 b.id = build.id
                 b.status = build.status
                 b.started_at = build.started_at
-                b.author =  build.commit.author_name
+                b.author = build.commit.author_name
+                b.project_path = p.path_with_namespace
               }
             });
 
@@ -93,7 +94,8 @@ var app = new Vue({
                 id: build.id,
                 status: build.status,
                 started_at: build.started_at,
-                author:  build.commit.author_name
+                author: build.commit.author_name,
+                project_path: p.path_with_namespace
               })
             }
           })

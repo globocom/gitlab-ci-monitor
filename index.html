@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/card.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/loader.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/message.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -18,6 +18,29 @@
       <div class="row">
         <img class="logo" src="images/gitlab-logo.svg"/>
       </div>
+      <div v-show="invalidConfig" class="row">
+        <div class="eight wide column centered ">
+          <div class="ui attached message">
+            <div class="header">
+              Invalid Configuration
+            </div>
+          </div>
+          <div class="ui attached fluid segment">
+            <p>
+              Make sure all configs are set.
+              The following properties must be defined in the URL.
+            </p>
+            <ul>
+              <li>gitlab</li>
+              <li>token</li>
+              <li>projects</li>
+            </ul>
+          </div>
+          <div class="ui bottom attached warning message">
+            <p> Ex: http://gitlab-ci-monitor.example.com?gitlab=gitlab.example.com&token=some-token&projects=project1,project2,project3</p>
+          </div>
+        </div>
+      </div>
       <div v-show="loading" class="row">
         <div class="ui large active centered inline loader"></div>
       </div>
@@ -26,15 +49,17 @@
           <div class="ui cards">
             <div v-for="build in builds" class="card {{build.status}}">
               <div class="content">
-                <div class="header project-name">{{ build.project }}</div>
+                <div class="header project-name"><a target="_blank" href="https://{{gitlab}}/{{build.project_path}}">{{ build.project }}</a></div>
                 <div class="meta">{{ build.author }}</div>
                 <div class="description">
                 </div>
               </div>
               <div class="extra content">
-                <span class="left floated hashtag">
+                <span class="left floated hashtag build-id">
+                  <a target="_blank" href="https://{{gitlab}}/{{build.project_path}}/builds/{{ build.id }}">
                   <i class="hashtag icon"></i>
-                  {{ build.id }}
+                    {{ build.id}}
+                  </a>
                 </span>
                 <span class="right floated calendar">
                   <i class="calendar icon"></i>
