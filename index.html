@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/card.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/loader.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,9 +18,11 @@
       <div class="row">
         <img class="logo" src="images/gitlab-logo.svg"/>
       </div>
+      <div v-show="loading" class="row">
+        <div class="ui large active centered inline loader"></div>
+      </div>
       <div class="row builds">
         <div class="sixteen wide column">
-          <div v-show="loading" class="loader"></div>
           <div class="ui cards">
             <div v-for="build in builds" class="card {{build.status}}">
               <div class="content">
