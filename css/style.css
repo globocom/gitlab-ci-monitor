@@ -1,8 +1,43 @@
+body {
+  padding-top: 30px;
+  font-family: 'Roboto', sans-serif;
+  background-image: url("../images/bk.png");
+}
+
 .build {
-  border: 2px solid black;
+  color: white;
   height: 200px;
   width: 200px;
-  margin: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+
+}
+
+.build .project {
+  font-weight: bold;
+  font-size: 20px;
+  margin: 50px 0px 15px 0px;
+}
+
+.build .author {
+  margin-bottom: 40px;
+}
+
+.build .info {
+  height: 30px;
+}
+
+.build.success {
+  background-color: #8BC34A;
+}
+
+.build.failed {
+  background-color: #F44336;
+}
+
+.build.running {
+  background-color: #FFC107;
 }
 
 .flex-container {

@@ -4,45 +4,18 @@
 <head>
   <title>Gitlab CI Monitor</title>
 
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 	<div id="app">
     <div v-show="loading" class="loader"></div>
-    {{ message }}
-    <ul>
-      <li v-for="project in projects">
-        {{ project.name }}
-      </li>
-    </ul>
-
     <div class="projects flex-container">
-      <div v-for="build in builds" class="build">
-        {{ build.author }}
-      </div>
-      <div class="build">
-        <div class="project">
-          Transmissions
-        </div>
-      </div>
-      <div class="build">
-        Luiz Filho
-      </div>
-      <div class="build">
-        Luiz Filho
-      </div>
-      <div class="build">
-        Luiz Filho
-      </div>
-      <div class="build">
-        Luiz Filho
-      </div>
-      <div class="build">
-        Luiz Filho
-      </div>
-      <div class="build">
-        Luiz Filho
+      <div v-for="build in builds" class="build {{build.status}}">
+        <div class="info project"> {{ build.project }} </div>
+        <div class="info author"> {{ build.author }} </div>
+        <div class="info last-build"> {{ build.started_at | timeAgo }} </div>
       </div>
     </div>
 	</div>

@@ -1,34 +1,58 @@
-var gitlabHost = "https://gitlab.globoi.com/api/v3"
-
-var token = getParameterByName("token")
-
-axios.defaults.baseURL = 'https://gitlab.globoi.com/api/v3'
-axios.defaults.headers.common['PRIVATE-TOKEN'] = token
+Vue.filter('timeAgo', function (value) {
+  return moment(value).fromNow()
+})
 
 var app = new Vue({
   el: '#app',
   data: {
-    message: 'Hello Vue.js!',
     projects: null,
     builds: [],
-    token: getParameterByName("token"),
-    repositories: [],
+    token: null,
+    gitlab: null,
+    repositories: null,
     loading: false
   },
   created: function() {
-    repositories = getParameterByName("projects")
-    if (repositories == null || token == null) {
+    this.loadConfig()
+
+    if (!this.configValid()) {
       return
     }
-    this.repositories = repositories.split(",")
+
+    this.setupDefaults()
+
     this.fetchProjecs()
 
     var self = this
     setInterval(function(){
       self.fetchBuilds()
-    }, 5000)
+    }, 60000)
   },
   methods: {
+    loadConfig: function() {
+      this.gitlab = getParameterByName("gitlab")
+      this.token = getParameterByName("token")
+      repositories = getParameterByName("projects")
+      if (repositories == null) {
+        return
+      }
+
+      this.repositories = repositories.split(",")
+    },
+    configValid: function() {
+      valid = true
+      if (this.repositories == null || this.token == null || this.gitlab == null) {
+        valid = false
+      }
+
+      return valid
+    },
+    setupDefaults: function() {
+      console.log("https://" + this.gitlab + "/api/v3")
+      axios.defaults.baseURL = "https://" + this.gitlab + "/api/v3"
+      axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
+    },
+
     fetchProjecs: function() {
       var self = this
       self.loading = true
@@ -38,6 +62,8 @@ var app = new Vue({
           self.projects = response.data.filter(function(p){
             return self.repositories.contains(p.name)
           })
+
+          self.fetchBuilds()
         })
         .catch(onError);
     },
@@ -70,7 +96,6 @@ var app = new Vue({
             }
           })
           .catch(onError);
-
       })
     }
   }
