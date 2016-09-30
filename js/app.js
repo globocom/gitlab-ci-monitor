@@ -80,6 +80,7 @@ var app = new Vue({
               if (b.project == p.name) {
                 updated = true
 
+                b.id = build.id
                 b.status = build.status
                 b.started_at = build.started_at
                 b.author =  build.commit.author_name
@@ -89,6 +90,7 @@ var app = new Vue({
             if (!updated) {
               self.builds.push({
                 project: p.name,
+                id: build.id,
                 status: build.status,
                 started_at: build.started_at,
                 author:  build.commit.author_name

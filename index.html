@@ -5,17 +5,42 @@
   <title>Gitlab CI Monitor</title>
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/card.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-	<div id="app">
-    <div v-show="loading" class="loader"></div>
-    <div class="projects flex-container">
-      <div v-for="build in builds" class="build {{build.status}}">
-        <div class="info project"> {{ build.project }} </div>
-        <div class="info author"> {{ build.author }} </div>
-        <div class="info last-build"> {{ build.started_at | timeAgo }} </div>
+  <div id="app">
+    <div class="ui four column grid">
+      <div class="row">
+        <img class="logo" src="images/gitlab-logo.svg"/>
+      </div>
+      <div class="row builds">
+        <div class="sixteen wide column">
+          <div v-show="loading" class="loader"></div>
+          <div class="ui cards">
+            <div v-for="build in builds" class="card {{build.status}}">
+              <div class="content">
+                <div class="header project-name">{{ build.project }}</div>
+                <div class="meta">{{ build.author }}</div>
+                <div class="description">
+                </div>
+              </div>
+              <div class="extra content">
+                <span class="left floated hashtag">
+                  <i class="hashtag icon"></i>
+                  {{ build.id }}
+                </span>
+                <span class="right floated calendar">
+                  <i class="calendar icon"></i>
+                  {{ build.started_at | timeAgo }}
+                </span>
+              </div>
+           </div>
+          </div>
+        </div>
       </div>
     </div>
 	</div>
