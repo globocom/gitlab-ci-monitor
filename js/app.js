@@ -1,7 +1,3 @@
-Vue.filter('timeAgo', function (value) {
-  return moment(value).fromNow()
-})
-
 var onError = function (error) {
   this.loading = false
 
@@ -91,13 +87,15 @@ var app = new Vue({
             updated = false
 
             build = response.data[0]
+            startedFromNow = moment(build.started_at).fromNow()
+
             self.builds.forEach(function(b){
               if (b.project == p.name) {
                 updated = true
 
                 b.id = build.id
                 b.status = build.status
-                b.started_at = build.started_at
+                b.started_at = startedFromNow,
                 b.author = build.commit.author_name
                 b.project_path = p.path_with_namespace
               }
@@ -108,7 +106,7 @@ var app = new Vue({
                 project: p.name,
                 id: build.id,
                 status: build.status,
-                started_at: build.started_at,
+                started_at: startedFromNow,
                 author: build.commit.author_name,
                 project_path: p.path_with_namespace
               })
