@@ -18,6 +18,11 @@
       <div class="row">
         <img class="logo" src="images/gitlab-logo.svg"/>
       </div>
+      <div v-show="onError" class="row">
+        <div class="eight wide column centered ">
+          <div class="ui red message">{{onError.message}}</div>
+        </div>
+      </div>
       <div v-show="invalidConfig" class="row">
         <div class="eight wide column centered ">
           <div class="ui attached message">

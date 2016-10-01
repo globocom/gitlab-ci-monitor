@@ -2,6 +2,20 @@ Vue.filter('timeAgo', function (value) {
   return moment(value).fromNow()
 })
 
+var onError = function (error) {
+  this.loading = false
+
+  this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
+
+  if(error.message == 'Network Error') {
+    this.onError = { message: "Network Error. Please check the Gitlab domain." }
+  }
+
+  if(error.response.status == 401) {
+    this.onError = { message: "Unauthorized Access. Please check your token." }
+  }
+}
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -11,7 +25,8 @@ var app = new Vue({
     gitlab: null,
     repositories: null,
     loading: false,
-    invalidConfig: false
+    invalidConfig: false,
+    onError: null
   },
   created: function() {
     this.loadConfig()
@@ -66,7 +81,7 @@ var app = new Vue({
 
           self.fetchBuilds()
         })
-        .catch(onError);
+        .catch(onError.bind(self));
     },
     fetchBuilds: function() {
       var self = this
@@ -99,14 +114,10 @@ var app = new Vue({
               })
             }
           })
-          .catch(onError);
+          .catch(onError.bind(self));
       })
     }
   }
 })
 
 
-var onError = function (error) {
-  app.loading = false
-  console.log(error);
-}
