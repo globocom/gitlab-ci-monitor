@@ -46,6 +46,7 @@ var app = new Vue({
       this.gitlab = getParameterByName("gitlab")
       this.token = getParameterByName("token")
       repositories = getParameterByName("projects")
+      this.ref = getParameterByName("ref")
       if (repositories == null) {
         return
       }
@@ -86,7 +87,10 @@ var app = new Vue({
           .then(function (response) {
             updated = false
 
-            build = response.data[0]
+            build = self.filterLastBuild(response.data)
+            if (!build) {
+              return
+            }
             startedFromNow = moment(build.started_at).fromNow()
 
             self.builds.forEach(function(b){
@@ -114,6 +118,21 @@ var app = new Vue({
           })
           .catch(onError.bind(self));
       })
+    },
+
+    filterLastBuild: function(builds) {
+      if (!Array.isArray(builds) || builds.length === 0) {
+        return
+      }
+
+      if (this.ref) {
+        var self = this
+        return builds.find(function(build) {
+          return build.ref === self.ref
+        })
+      } else {
+        return builds[0]
+      }
     }
   }
 })
