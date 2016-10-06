@@ -68,7 +68,7 @@ var app = new Vue({
     fetchProjecs: function() {
       var self = this
       self.loading = true
-      axios.get('/projects?per_page=100')
+      axios.get('/projects?per_page=100&simple=true')
         .then(function (response) {
           self.loading = false
           self.projects = response.data.filter(function(p){
@@ -117,5 +117,3 @@ var app = new Vue({
     }
   }
 })
-
-
