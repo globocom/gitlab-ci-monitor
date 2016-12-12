@@ -15,7 +15,7 @@ var onError = function (error) {
 var app = new Vue({
   el: '#app',
   data: {
-    projects: null,
+    projects: [],
     builds: [],
     token: null,
     gitlab: null,
@@ -65,18 +65,27 @@ var app = new Vue({
       axios.defaults.baseURL = "https://" + this.gitlab + "/api/v3"
       axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
     },
-
-    fetchProjecs: function() {
+    fetchProjecs: function(page) {
       var self = this
+      var page = page || 1
+
       self.loading = true
-      axios.get('/projects?per_page=100&simple=true')
+      axios.get('/projects?simple=true&per_page=100&page=' + page)
         .then(function (response) {
           self.loading = false
-          self.projects = response.data.filter(function(p){
-            return self.repositories.contains(p.name)
+
+          response.data.forEach(function(p) {
+            if (self.repositories.contains(p.name)) {
+              self.projects.push(p)
+            }
           })
 
           self.fetchBuilds()
+
+          if(response.headers.link && response.headers.link.match('rel="next"')) {
+            page++
+            self.fetchProjecs(page)
+          }
         })
         .catch(onError.bind(self));
     },
