@@ -50,9 +50,9 @@
         <div class="ui large active centered inline loader"></div>
       </div>
       <div class="row builds">
-        <div v-for="build in builds" class="four wide column">
+        <div class="sixteen wide column">
           <div class="ui cards">
-            <div class="card {{build.status}}">
+            <div v-for="build in builds" class="card {{build.status}}">
               <div class="content">
                 <div class="header project-name"><a target="_blank" href="https://{{gitlab}}/{{build.project_path}}">{{ build.project }}</a></div>
                 <div class="meta">{{ build.author }}</div>

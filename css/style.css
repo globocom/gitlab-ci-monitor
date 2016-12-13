@@ -27,8 +27,7 @@ body {
 }
 
 .ui.card, .ui.cards>.card {
-  width: 100%;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .ui.card, .ui.cards>.card.success {
