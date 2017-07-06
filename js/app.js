@@ -3,6 +3,10 @@ var onError = function (error) {
 
   this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
 
+  if(error.message == "Wrong format") {
+    this.onError = { message: "Wrong projects format! Try: 'namespace/project' or 'namespace/project/branch'" }
+  }
+
   if(error.message == 'Network Error') {
     this.onError = { message: "Network Error. Please check the Gitlab domain." }
   }
@@ -45,13 +49,35 @@ var app = new Vue({
     loadConfig: function() {
       this.gitlab = getParameterByName("gitlab")
       this.token = getParameterByName("token")
-      repositories = getParameterByName("projects")
       this.ref = getParameterByName("ref")
+
+      repositories = getParameterByName("projects")
       if (repositories == null) {
         return
       }
 
-      this.repositories = repositories.split(",")
+      repositories = repositories.split(",")
+      this.repositories = []
+      for (x in repositories) {
+        try {
+          repository = repositories[x].split('/')
+          var namespace = repository[0].trim()
+          var projectName = repository[1].trim()
+          var nameWithNamespace = namespace + "/" + projectName
+          var branch = "master"
+          if (repository.length > 2) {
+            branch = repository[2].trim()
+          }
+          this.repositories.push({
+            nameWithNamespace: nameWithNamespace,
+            projectName: projectName,
+            branch: branch
+          })
+        }
+        catch(err) {
+          onError.bind(this)({message: "Wrong format", response: {status: 500}})
+        }
+      };
     },
     configValid: function() {
       valid = true
@@ -67,63 +93,60 @@ var app = new Vue({
     },
     fetchProjects: function(page) {
       var self = this
-      var page = page || 1
 
-      self.loading = true
-      axios.get('/projects?simple=true&per_page=100&page=' + page)
-        .then(function (response) {
-          self.loading = false
-
-          response.data.forEach(function(p) {
-            if (self.repositories.contains(p.name)) {
-              self.projects.push(p)
-            }
+      this.repositories.forEach(function(p){
+        self.loading = true
+        axios.get('/projects/' + p.nameWithNamespace.replace('/', '%2F'))
+          .then(function (response) {
+            self.loading = false
+            self.projects.push({project: p, data: response.data})
+            self.fetchBuilds()
           })
-
-          self.fetchBuilds()
-
-          if(response.headers.link && response.headers.link.match('rel="next"')) {
-            page++
-            self.fetchProjects(page)
-          }
-        })
-        .catch(onError.bind(self));
+          .catch(onError.bind(self));
+      })
     },
     fetchBuilds: function() {
       var self = this
       this.projects.forEach(function(p){
-        axios.get('/projects/' + p.id + '/builds')
+        axios.get('/projects/' + p.data.id + '/repository/branches/' + p.project.branch)
           .then(function (response) {
-            updated = false
+            lastCommit = response.data.commit.id
+            axios.get('/projects/' + p.data.id + '/repository/commits/' + lastCommit + '/builds')
+              .then(function (response) {
+                updated = false
 
-            build = self.filterLastBuild(response.data)
-            if (!build) {
-              return
-            }
-            startedFromNow = moment(build.started_at).fromNow()
+                build = self.filterLastBuild(response.data)
+                if (!build) {
+                  return
+                }
+                startedFromNow = moment(build.started_at).fromNow()
 
-            self.builds.forEach(function(b){
-              if (b.project == p.name) {
-                updated = true
+                self.builds.forEach(function(b){
+                  if (b.project == p.project.projectName && b.branch == p.project.branch) {
+                    updated = true
 
-                b.id = build.id
-                b.status = build.status
-                b.started_at = startedFromNow,
-                b.author = build.commit.author_name
-                b.project_path = p.path_with_namespace
-              }
-            });
+                    b.id = build.id
+                    b.status = build.status
+                    b.started_at = startedFromNow,
+                    b.author = build.commit.author_name
+                    b.project_path = p.data.path_with_namespace
+                    b.branch = p.project.branch
+                  }
+                });
 
-            if (!updated) {
-              self.builds.push({
-                project: p.name,
-                id: build.id,
-                status: build.status,
-                started_at: startedFromNow,
-                author: build.commit.author_name,
-                project_path: p.path_with_namespace
+                if (!updated) {
+                  self.builds.push({
+                    project: p.project.projectName,
+                    id: build.id,
+                    status: build.status,
+                    started_at: startedFromNow,
+                    author: build.commit.author_name,
+                    project_path: p.data.path_with_namespace,
+                    branch: p.project.branch
+                  })
+                }
               })
-            }
+              .catch(onError.bind(self));
           })
           .catch(onError.bind(self));
       })
@@ -133,15 +156,7 @@ var app = new Vue({
       if (!Array.isArray(builds) || builds.length === 0) {
         return
       }
-
-      if (this.ref) {
-        var self = this
-        return builds.find(function(build) {
-          return build.ref === self.ref
-        })
-      } else {
-        return builds[0]
-      }
+      return builds[0]
     }
   }
 })

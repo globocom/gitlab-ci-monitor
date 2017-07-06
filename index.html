@@ -42,7 +42,7 @@
             </ul>
           </div>
           <div class="ui bottom attached warning message">
-            <p> Ex: http://gitlab-ci-monitor.example.com?gitlab=gitlab.example.com&token=some-token&projects=project1,project2,project3</p>
+            <p>Ex: http://gitlab-ci-monitor.example.com?gitlab=gitlab.example.com&token=some-token&projects=namespace/project1/branch,namespace/project2/branch,namespace/project3/branch</p>
           </div>
         </div>
       </div>
@@ -54,7 +54,9 @@
           <div class="ui cards">
             <div v-for="build in builds" class="card {{build.status}}">
               <div class="content">
-                <div class="header project-name"><a target="_blank" href="https://{{gitlab}}/{{build.project_path}}">{{ build.project }}</a></div>
+                <div class="header project-name">
+                  <a target="_blank" href="https://{{gitlab}}/{{build.project_path}}">{{ build.project }} ({{ build.branch }})</a>
+                </div>
                 <div class="meta">{{ build.author }}</div>
                 <div class="description">
                 </div>
