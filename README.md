@@ -27,3 +27,7 @@ token has access. Then, it will filter the list by the **projects** parameter
 and show only the ones that have builds (i.e., that have GitLab CI enabled).
 Finally, it will show the status from the most recent build in **master**
 branch.
+
+## License
+
+GitLab CI Monitor is licensed under the [MIT license](LICENSE).
