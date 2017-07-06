@@ -34,7 +34,7 @@ var app = new Vue({
 
     this.setupDefaults()
 
-    this.fetchProjecs()
+    this.fetchProjects()
 
     var self = this
     setInterval(function(){
@@ -65,7 +65,7 @@ var app = new Vue({
       axios.defaults.baseURL = "https://" + this.gitlab + "/api/v3"
       axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
     },
-    fetchProjecs: function(page) {
+    fetchProjects: function(page) {
       var self = this
       var page = page || 1
 
@@ -84,7 +84,7 @@ var app = new Vue({
 
           if(response.headers.link && response.headers.link.match('rel="next"')) {
             page++
-            self.fetchProjecs(page)
+            self.fetchProjects(page)
           }
         })
         .catch(onError.bind(self));
