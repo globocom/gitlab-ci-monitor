@@ -6,6 +6,11 @@ A simple dashboard for monitoring [GitLab CI][gitlab-ci] builds.
 [gitlab-ci]: https://about.gitlab.com/gitlab-ci/
 
 
+![Example][example]
+
+[example]: images/gitlab-ci-monitor-example.png
+
+
 ## Usage
 
 This project runs completely in the browser. It expects a few parameters
