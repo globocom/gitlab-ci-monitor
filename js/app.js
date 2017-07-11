@@ -11,7 +11,7 @@ var onError = function (error) {
     this.onError = { message: "Network Error. Please check the Gitlab domain." }
   }
 
-  if(error.response.status == 401) {
+  if(error.response && error.response.status == 401) {
     this.onError = { message: "Unauthorized Access. Please check your token." }
   }
 }
