@@ -1,6 +1,9 @@
 {
   "extends": "eslint:recommended",
   "rules": {
+    "no-empty": [
+      "error", { "allowEmptyCatch": true }
+    ],
     "no-console": 0,
     "semi": "off",
     "quotes": ["warn", "single"]
