@@ -1,0 +1,6 @@
+validateBuild:
+  tags:
+    - bsn
+  script:
+    - "npm install"
+    - "npm test"

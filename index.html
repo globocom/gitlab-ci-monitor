@@ -1,90 +1,16 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Gitlab CI Monitor</title>
-
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/card.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/message.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
-  <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-  <div id="app">
-    <div class="ui four column grid">
-      <div class="row">
-        <img class="logo" src="images/gitlab-logo.svg"/>
-      </div>
-      <div v-show="onError" class="row">
-        <div class="eight wide column centered ">
-          <div class="ui red message">{{onError.message}}</div>
-        </div>
-      </div>
-      <div v-show="invalidConfig" class="row">
-        <div class="eight wide column centered ">
-          <div class="ui attached message">
-            <div class="header">
-              Invalid Configuration
-            </div>
-          </div>
-          <div class="ui attached fluid segment">
-            <p>
-              Make sure all configs are set.
-              The following properties must be defined in the URL.
-            </p>
-            <ul>
-              <li>gitlab</li>
-              <li>token</li>
-              <li>projects</li>
-            </ul>
-          </div>
-          <div class="ui bottom attached warning message">
-            <p>Ex: http://gitlab-ci-monitor.example.com?gitlab=gitlab.example.com&token=some-token&projects=namespace/project1/branch,namespace/project2/branch,namespace/project3/branch</p>
-          </div>
-        </div>
-      </div>
-      <div v-show="loading" class="row">
-        <div class="ui large active centered inline loader"></div>
-      </div>
-      <div class="row builds">
-        <div class="sixteen wide column">
-          <div class="ui stackable cards">
-            <div v-for="build in builds" class="card {{build.status}}">
-              <div class="content">
-                <div class="header project-name">
-                  <a target="_blank" href="https://{{gitlab}}/{{build.project_path}}">{{ build.project }} ({{ build.branch }})</a>
-                </div>
-                <div class="meta">{{ build.author }}</div>
-                <div class="description">
-                </div>
-              </div>
-              <div class="extra content">
-                <span class="left floated hashtag build-id">
-                  <a target="_blank" href="https://{{gitlab}}/{{build.project_path}}/builds/{{ build.id }}">
-                  <i class="hashtag icon"></i>
-                    {{ build.id}}
-                  </a>
-                </span>
-                <span class="right floated calendar">
-                  <i class="calendar icon"></i>
-                  {{ build.started_at }}
-                </span>
-              </div>
-           </div>
-          </div>
-        </div>
-      </div>
-    </div>
-	</div>
-
-
-  <script src="js/vue.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/moment.min.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/app.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Gitlab CI Monitor</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/card.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/message.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
