@@ -32,6 +32,7 @@ var app = new Vue({
   data: {
     projects: [],
     pipelines: [],
+    pipelinesMap: {},
     token: null,
     gitlab: null,
     repositories: null,
@@ -78,7 +79,8 @@ var app = new Vue({
           this.repositories.push({
             nameWithNamespace: nameWithNamespace,
             projectName: projectName,
-            branch: branch
+            branch: branch,
+            key: nameWithNamespace + '/' + branch
           })
         }
         catch(err) {
@@ -114,52 +116,61 @@ var app = new Vue({
       })
     },
     updateBuilds: function() {
-      var self = this
+      const self = this
       this.projects.forEach(function(p) {self.fetchBuild(p)})
     },
     fetchBuild: function(p) {
-      var self = this
+      const self = this
+
+      function hasPipeline(commit) {
+        return commit.data.last_pipeline !== null && commit.data.last_pipeline.id !== undefined;
+      }
+
+      function isNewOrStaleProject(commit) {
+        // Either this is a fresh project or the last_pipeline did not change between retrievals (status or id)
+        return self.pipelinesMap[p.project.key] === undefined ||
+          self.pipelinesMap[p.project.key].id !== commit.data.last_pipeline.id ||
+          self.pipelinesMap[p.project.key].status !== commit.data.last_pipeline.status
+      }
+
       axios.get('/projects/' + p.data.id + '/repository/commits/' + p.project.branch)
         .then(function(commit) {
-          if (commit.data.last_pipeline !== null && commit.data.last_pipeline.id !== undefined) {
+          // Either this is a fresh project or the last_pipeline did not change between retrievals
+          if (hasPipeline(commit) && isNewOrStaleProject(commit)) {
             self.updateBuildInfo(p, commit)
           }
         })
         .catch(onError.bind(self))
     },
     updateBuildInfo: function(p, commit) {
-      var self = this
+      const self = this
       axios.get('/projects/' + p.data.id + '/pipelines/' + commit.data.last_pipeline.id)
         .then(function(pipeline) {
-          updated = false
-          startedFromNow = moment(pipeline.data.started_at).fromNow()
-          self.pipelines.forEach(function (b) {
-            if (b.project == p.project.projectName && b.branch == p.project.branch) {
-              b.id = pipeline.data.id
-              b.status = pipeline.data.status
-              b.started_at = startedFromNow
-              b.author = commit.data.author_name
-              b.project_path = p.data.path_with_namespace
-              b.branch = p.project.branch
-              b.title = commit.data.title
-              b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
-              b.sha1 = commit.data.id
-              updated = true
-            }
-          })
-          if (!updated) {
-            self.pipelines.push({
+          const startedFromNow = moment(pipeline.data.started_at).fromNow()
+          const b = self.pipelinesMap[p.project.key]
+          if (b !== undefined) {
+            b.id = pipeline.data.id
+            b.status = pipeline.data.status
+            b.started_at = startedFromNow
+            b.author = commit.data.author_name
+            b.title = commit.data.title
+            b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
+            b.sha1 = commit.data.id
+          } else {
+            const project = {
               project: p.project.projectName,
               id: pipeline.data.id,
               status: pipeline.data.status,
               started_at: startedFromNow,
               author: commit.data.author_name,
-              project_path: p.data.path_with_namespace,
+              project_path: p.project.nameWithNamespace,
               branch: p.project.branch,
               title: commit.data.title,
               by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000",
               sha1: commit.data.id
-            })
+            };
+            self.pipelines.push(project)
+            self.pipelinesMap[p.project.key] = project
           }
         })
         .catch(onError.bind(self))
