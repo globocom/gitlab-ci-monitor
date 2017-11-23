@@ -3,7 +3,7 @@
 A simple dashboard for monitoring [GitLab CI][gitlab-ci] builds.
 **Alpha version**.
 
-Gitlab Support: 8.10.4 (API V3)
+Gitlab Support: 10.1.4 (API V4)
 
 [gitlab-ci]: https://about.gitlab.com/gitlab-ci/
 

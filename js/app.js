@@ -16,11 +16,16 @@ var onError = function (error) {
   }
 }
 
+// https://stackoverflow.com/questions/35070271/vue-js-components-how-to-truncate-the-text-in-the-slot-element-in-a-component
+Vue.filter('truncate', function (text, stop, clamp) {
+  return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
+})
+
 var app = new Vue({
   el: '#app',
   data: {
     projects: [],
-    builds: [],
+    pipelines: [],
     token: null,
     gitlab: null,
     repositories: null,
@@ -88,7 +93,7 @@ var app = new Vue({
       return valid
     },
     setupDefaults: function() {
-      axios.defaults.baseURL = "https://" + this.gitlab + "/api/v3"
+      axios.defaults.baseURL = "https://" + this.gitlab + "/api/v4"
       axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
     },
     fetchProjects: function(page) {
@@ -107,56 +112,44 @@ var app = new Vue({
     },
     fetchBuilds: function() {
       var self = this
-      this.projects.forEach(function(p){
-        axios.get('/projects/' + p.data.id + '/repository/branches/' + p.project.branch)
-          .then(function (response) {
-            lastCommit = response.data.commit.id
-            axios.get('/projects/' + p.data.id + '/repository/commits/' + lastCommit + '/builds')
-              .then(function (response) {
+      this.projects.forEach(function(p) {
+        axios.get('/projects/' + p.data.id + '/repository/commits/' + p.project.branch)
+          .then(function(commit) {
+            axios.get('/projects/' + p.data.id + '/pipelines/' + commit.data.last_pipeline.id)
+              .then(function(pipeline) {
                 updated = false
-
-                build = self.filterLastBuild(response.data)
-                if (!build) {
-                  return
-                }
-                startedFromNow = moment(build.started_at).fromNow()
-
-                self.builds.forEach(function(b){
+                startedFromNow = moment(pipeline.data.started_at).fromNow()
+                self.pipelines.forEach(function (b) {
                   if (b.project == p.project.projectName && b.branch == p.project.branch) {
-                    updated = true
-
-                    b.id = build.id
-                    b.status = build.status
-                    b.started_at = startedFromNow,
-                    b.author = build.commit.author_name
+                    b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
+                    b.id = pipeline.data.id
+                    b.status = pipeline.data.status
+                    b.started_at = startedFromNow
+                    b.author = commit.data.author_name
                     b.project_path = p.data.path_with_namespace
                     b.branch = p.project.branch
+                    b.title = commit.data.title
+                    updated = true
                   }
-                });
-
+                })
                 if (!updated) {
-                  self.builds.push({
+                  self.pipelines.push({
                     project: p.project.projectName,
-                    id: build.id,
-                    status: build.status,
+                    id: pipeline.data.id,
+                    status: pipeline.data.status,
                     started_at: startedFromNow,
-                    author: build.commit.author_name,
+                    author: commit.data.author_name,
                     project_path: p.data.path_with_namespace,
-                    branch: p.project.branch
+                    branch: p.project.branch,
+                    title: commit.data.title,
+                    by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
                   })
                 }
               })
-              .catch(onError.bind(self));
+              .catch(onError.bind(self))
           })
-          .catch(onError.bind(self));
+          .catch(onError.bind(self))
       })
     },
-
-    filterLastBuild: function(builds) {
-      if (!Array.isArray(builds) || builds.length === 0) {
-        return
-      }
-      return builds[0]
-    }
   }
 })

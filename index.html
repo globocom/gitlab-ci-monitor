@@ -52,25 +52,26 @@
       <div class="row builds">
         <div class="sixteen wide column">
           <div class="ui stackable cards">
-            <div v-for="build in builds" class="card {{build.status}}">
+            <div v-for="pipeline in pipelines" class="card {{pipeline.status}}">
               <div class="content">
                 <div class="header project-name">
-                  <a target="_blank" href="https://{{gitlab}}/{{build.project_path}}">{{ build.project }} ({{ build.branch }})</a>
+                  <a target="_blank" href="https://{{gitlab}}/{{pipeline.project_path}}">{{ pipeline.project }} ({{ pipeline.branch }})</a>
                 </div>
-                <div class="meta">{{ build.author }}</div>
+                <div class="meta">{{ pipeline.author }}</div>
                 <div class="description">
+                  {{ pipeline.title | truncate 40 }} <b>({{ pipeline.by_commit ? "commit" : "no commit" }})</b>
                 </div>
               </div>
               <div class="extra content">
                 <span class="left floated hashtag build-id">
-                  <a target="_blank" href="https://{{gitlab}}/{{build.project_path}}/builds/{{ build.id }}">
+                  <a target="_blank" href="https://{{gitlab}}/{{pipeline.project_path}}/pipelines/{{ pipeline.id }}">
                   <i class="hashtag icon"></i>
-                    {{ build.id}}
+                    {{ pipeline.id}}
                   </a>
                 </span>
                 <span class="right floated calendar">
                   <i class="calendar icon"></i>
-                  {{ build.started_at }}
+                  {{ pipeline.started_at }}
                 </span>
               </div>
            </div>
