@@ -47,7 +47,7 @@ var app = new Vue({
 
     var self = this
     setInterval(function(){
-      self.fetchBuilds()
+      self.updateBuilds()
     }, 60000)
   },
   methods: {
@@ -104,52 +104,55 @@ var app = new Vue({
         axios.get('/projects/' + p.nameWithNamespace.replace('/', '%2F'))
           .then(function (response) {
             self.loading = false
-            self.projects.push({project: p, data: response.data})
-            self.fetchBuilds()
+            p = {project: p, data: response.data}
+            self.projects.push(p)
+            self.fetchBuild(p)
           })
           .catch(onError.bind(self));
       })
     },
-    fetchBuilds: function() {
+    updateBuilds: function() {
       var self = this
-      this.projects.forEach(function(p) {
-        axios.get('/projects/' + p.data.id + '/repository/commits/' + p.project.branch)
-          .then(function(commit) {
-            axios.get('/projects/' + p.data.id + '/pipelines/' + commit.data.last_pipeline.id)
-              .then(function(pipeline) {
-                updated = false
-                startedFromNow = moment(pipeline.data.started_at).fromNow()
-                self.pipelines.forEach(function (b) {
-                  if (b.project == p.project.projectName && b.branch == p.project.branch) {
-                    b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
-                    b.id = pipeline.data.id
-                    b.status = pipeline.data.status
-                    b.started_at = startedFromNow
-                    b.author = commit.data.author_name
-                    b.project_path = p.data.path_with_namespace
-                    b.branch = p.project.branch
-                    b.title = commit.data.title
-                    updated = true
-                  }
-                })
-                if (!updated) {
-                  self.pipelines.push({
-                    project: p.project.projectName,
-                    id: pipeline.data.id,
-                    status: pipeline.data.status,
-                    started_at: startedFromNow,
-                    author: commit.data.author_name,
-                    project_path: p.data.path_with_namespace,
-                    branch: p.project.branch,
-                    title: commit.data.title,
-                    by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
-                  })
+      this.projects.forEach(self.fetchBuild(p))
+    },
+    fetchBuild: function(p) {
+      var self = this
+      axios.get('/projects/' + p.data.id + '/repository/commits/' + p.project.branch)
+        .then(function(commit) {
+          axios.get('/projects/' + p.data.id + '/pipelines/' + commit.data.last_pipeline.id)
+            .then(function(pipeline) {
+              updated = false
+              startedFromNow = moment(pipeline.data.started_at).fromNow()
+              self.pipelines.forEach(function (b) {
+                if (b.project == p.project.projectName && b.branch == p.project.branch) {
+                  b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
+                  b.id = pipeline.data.id
+                  b.status = pipeline.data.status
+                  b.started_at = startedFromNow
+                  b.author = commit.data.author_name
+                  b.project_path = p.data.path_with_namespace
+                  b.branch = p.project.branch
+                  b.title = commit.data.title
+                  updated = true
                 }
               })
-              .catch(onError.bind(self))
-          })
-          .catch(onError.bind(self))
-      })
-    },
+              if (!updated) {
+                self.pipelines.push({
+                  project: p.project.projectName,
+                  id: pipeline.data.id,
+                  status: pipeline.data.status,
+                  started_at: startedFromNow,
+                  author: commit.data.author_name,
+                  project_path: p.data.path_with_namespace,
+                  branch: p.project.branch,
+                  title: commit.data.title,
+                  by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
+                })
+              }
+            })
+            .catch(onError.bind(self))
+        })
+        .catch(onError.bind(self))
+    }
   }
 })
