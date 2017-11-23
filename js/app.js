@@ -11,9 +11,15 @@ var onError = function (error) {
     this.onError = { message: "Network Error. Please check the Gitlab domain." }
   }
 
+  if(error.message !== undefined ) {
+    this.onError = { message: error.message }
+  }
+
   if(error.response && error.response.status == 401) {
     this.onError = { message: "Unauthorized Access. Please check your token." }
   }
+  console.log(this.onError.message)
+
 }
 
 // https://stackoverflow.com/questions/35070271/vue-js-components-how-to-truncate-the-text-in-the-slot-element-in-a-component
@@ -113,13 +119,13 @@ var app = new Vue({
     },
     updateBuilds: function() {
       var self = this
-      this.projects.forEach(self.fetchBuild(p))
+      this.projects.forEach(function(p) {self.fetchBuild(p)})
     },
     fetchBuild: function(p) {
       var self = this
       axios.get('/projects/' + p.data.id + '/repository/commits/' + p.project.branch)
         .then(function(commit) {
-          if (commit.data.last_pipeline !== undefined) {
+          if (commit.data.last_pipeline !== null && commit.data.last_pipeline.id !== undefined) {
             self.updateBuildInfo(p, commit)
           }
         })
