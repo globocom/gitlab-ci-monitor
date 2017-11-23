@@ -135,7 +135,6 @@ var app = new Vue({
           startedFromNow = moment(pipeline.data.started_at).fromNow()
           self.pipelines.forEach(function (b) {
             if (b.project == p.project.projectName && b.branch == p.project.branch) {
-              b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
               b.id = pipeline.data.id
               b.status = pipeline.data.status
               b.started_at = startedFromNow
@@ -143,6 +142,8 @@ var app = new Vue({
               b.project_path = p.data.path_with_namespace
               b.branch = p.project.branch
               b.title = commit.data.title
+              b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
+              b.sha1 = commit.data.id
               updated = true
             }
           })
@@ -156,7 +157,8 @@ var app = new Vue({
               project_path: p.data.path_with_namespace,
               branch: p.project.branch,
               title: commit.data.title,
-              by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
+              by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000",
+              sha1: commit.data.id
             })
           }
         })
