@@ -3,16 +3,16 @@ var onError = function (error) {
 
   this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
 
+  if(error.message !== undefined ) {
+    this.onError = { message: error.message }
+  }
+
   if(error.message == "Wrong format") {
-    this.onError = { message: "Wrong projects format! Try: 'namespace/project' or 'namespace/project/branch'" }
+    this.onError = { message: "Wrong projects format! Try: 'namespace/project/branch'" }
   }
 
   if(error.message == 'Network Error') {
     this.onError = { message: "Network Error. Please check the Gitlab domain." }
-  }
-
-  if(error.message !== undefined ) {
-    this.onError = { message: error.message }
   }
 
   if(error.response && error.response.status == 401) {
@@ -72,13 +72,9 @@ var app = new Vue({
       for (x in repositories) {
         try {
           repository = repositories[x].split('/')
-          var namespace = repository[0].trim()
-          var projectName = repository[1].trim()
-          var nameWithNamespace = namespace + "/" + projectName
-          var branch = "master"
-          if (repository.length > 2) {
-            branch = repository[2].trim()
-          }
+          var branch = repository[repository.length -1].trim()
+          var projectName = repository[repository.length -2].trim()
+          var nameWithNamespace = repository.slice(0, repository.length -1).join('/')
           this.repositories.push({
             nameWithNamespace: nameWithNamespace,
             projectName: projectName,
