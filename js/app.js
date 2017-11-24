@@ -27,6 +27,10 @@ Vue.filter('truncate', function (text, stop, clamp) {
   return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
 })
 
+function lastRun() {
+  return moment().format('YYYY-MM-DD h:mm:ss');
+}
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -38,6 +42,7 @@ var app = new Vue({
     repositories: null,
     loading: false,
     invalidConfig: false,
+    lastRun: lastRun(),
     onError: null
   },
   created: function() {
@@ -101,9 +106,8 @@ var app = new Vue({
       axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
     },
     fetchProjects: function(page) {
-      var self = this
-
-      this.repositories.forEach(function(p){
+      const self = this
+      self.repositories.forEach(function(p){
         self.loading = true
         axios.get('/projects/' + p.nameWithNamespace.replace('/', '%2F'))
           .then(function (response) {
@@ -117,7 +121,9 @@ var app = new Vue({
     },
     updateBuilds: function() {
       const self = this
-      this.projects.forEach(function(p) {self.fetchBuild(p)})
+      self.onError = null
+      self.projects.forEach(function(p) {self.fetchBuild(p)})
+      self.lastRun = lastRun()
     },
     fetchBuild: function(p) {
       const self = this
