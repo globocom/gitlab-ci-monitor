@@ -1,5 +1,4 @@
-var onError = function (error) {
-  this.loading = false
+const onError = function (error) {
 
   this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
 
@@ -7,15 +6,15 @@ var onError = function (error) {
     this.onError = { message: error.message }
   }
 
-  if(error.message == "Wrong format") {
+  if(error.message === "Wrong format") {
     this.onError = { message: "Wrong projects format! Try: 'namespace/project/branch'" }
   }
 
-  if(error.message == 'Network Error') {
+  if(error.message === 'Network Error') {
     this.onError = { message: "Network Error. Please check the Gitlab domain." }
   }
 
-  if(error.response && error.response.status == 401) {
+  if(error.response && error.response.status === 401) {
     this.onError = { message: "Unauthorized Access. Please check your token." }
   }
   console.log(this.onError.message)
@@ -31,7 +30,9 @@ function lastRun() {
   return moment().format('ddd, YYYY-MM-DD HH:mm:ss');
 }
 
-var app = new Vue({
+// Used by vue
+// noinspection JSUnusedGlobalSymbols
+const app = new Vue({
   el: '#app',
   data: {
     projects: [],
@@ -49,7 +50,7 @@ var app = new Vue({
     this.loadConfig()
 
     if (!this.configValid()) {
-      this.invalidConfig = true;
+      onError.bind(this)({message: "Wrong format", response: {status: 500}})
       return
     }
 
@@ -64,24 +65,25 @@ var app = new Vue({
   },
   methods: {
     loadConfig: function() {
-      this.gitlab = getParameterByName("gitlab")
-      this.token = getParameterByName("token")
-      this.ref = getParameterByName("ref")
+      const self = this
+      self.gitlab = getParameterByName("gitlab")
+      self.token = getParameterByName("token")
+      self.ref = getParameterByName("ref")
 
-      repositories = getParameterByName("projects")
-      if (repositories == null) {
+      const repositoriesParameter = getParameterByName("projects")
+      if (repositoriesParameter === null) {
         return
       }
 
-      repositories = repositories.split(",")
-      this.repositories = []
-      for (x in repositories) {
+      const repositories = repositoriesParameter.split(",")
+      self.repositories = []
+      for (const x in repositories) {
         try {
-          repository = repositories[x].split('/')
-          var branch = repository[repository.length -1].trim()
-          var projectName = repository[repository.length -2].trim()
-          var nameWithNamespace = repository.slice(0, repository.length -1).join('/')
-          this.repositories.push({
+          const repository = repositories[x].split('/')
+          const branch = repository[repository.length -1].trim()
+          const projectName = repository[repository.length -2].trim()
+          const nameWithNamespace = repository.slice(0, repository.length -1).join('/')
+          self.repositories.push({
             nameWithNamespace: nameWithNamespace,
             projectName: projectName,
             branch: branch,
@@ -89,23 +91,18 @@ var app = new Vue({
           })
         }
         catch(err) {
-          onError.bind(this)({message: "Wrong format", response: {status: 500}})
+          onError.bind(self)({message: "Wrong format", response: {status: 500}})
         }
-      };
+      }
     },
     configValid: function() {
-      valid = true
-      if (this.repositories == null || this.token == null || this.gitlab == null) {
-        valid = false
-      }
-
-      return valid
+      return !(this.repositories === null || this.token === null || this.gitlab === null)
     },
     setupDefaults: function() {
       axios.defaults.baseURL = "https://" + this.gitlab + "/api/v4"
       axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
     },
-    fetchProjects: function(page) {
+    fetchProjects: function() {
       const self = this
       self.repositories.forEach(function(p){
         self.loading = true
@@ -116,7 +113,7 @@ var app = new Vue({
             self.projects.push(p)
             self.fetchBuild(p)
           })
-          .catch(onError.bind(self));
+          .catch(onError.bind(self))
       })
     },
     updateBuilds: function() {
@@ -129,7 +126,7 @@ var app = new Vue({
       const self = this
 
       function hasPipeline(commit) {
-        return commit.data.last_pipeline !== null && commit.data.last_pipeline.id !== undefined;
+        return commit.data.last_pipeline !== null && commit.data.last_pipeline.id !== undefined
       }
 
       function isNewOrStaleProject(commit) {
@@ -174,7 +171,7 @@ var app = new Vue({
               title: commit.data.title,
               by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000",
               sha1: commit.data.id
-            };
+            }
             self.pipelines.push(project)
             self.pipelinesMap[p.project.key] = project
           }
