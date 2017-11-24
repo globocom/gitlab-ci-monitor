@@ -28,7 +28,7 @@ Vue.filter('truncate', function (text, stop, clamp) {
 })
 
 function lastRun() {
-  return moment().format('YYYY-MM-DD h:mm:ss');
+  return moment().format('ddd, YYYY-MM-DD HH:mm:ss');
 }
 
 var app = new Vue({
