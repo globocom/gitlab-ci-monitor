@@ -100,7 +100,9 @@ const app = new Vue({
     },
     setupDefaults: function() {
       axios.defaults.baseURL = "https://" + this.gitlab + "/api/v4"
-      axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
+      if (this.token !== "use_cookie") {
+        axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
+      }
     },
     fetchProjects: function() {
       const self = this
