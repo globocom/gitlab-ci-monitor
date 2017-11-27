@@ -105,6 +105,7 @@ const app = new Vue({
       } else {
         // Running on the GitLab-Server...
         axios.defaults.baseURL = "/api/v4"
+        this.gitlab = location.hostname
       }
     },
     fetchProjects: function() {
