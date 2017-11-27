@@ -96,12 +96,15 @@ const app = new Vue({
       }
     },
     configValid: function() {
-      return !(this.repositories === null || this.token === null || this.gitlab === null)
+      return !(this.repositories === null || this.token === null || this.gitlab === null && this.token !== "use_cookie")
     },
     setupDefaults: function() {
-      axios.defaults.baseURL = "https://" + this.gitlab + "/api/v4"
       if (this.token !== "use_cookie") {
+        axios.defaults.baseURL = "https://" + this.gitlab + "/api/v4"
         axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
+      } else {
+        // Running on the GitLab-Server...
+        axios.defaults.baseURL = "/api/v4"
       }
     },
     fetchProjects: function() {
