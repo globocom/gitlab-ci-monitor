@@ -55,17 +55,17 @@
             <div v-for="pipeline in pipelines" class="card {{pipeline.status}}">
               <div class="content">
                 <div class="header project-name">
-                  <a target="_blank" href="https://{{gitlab}}/{{pipeline.project_path}}/">{{ pipeline.project }}</a> <a href="https://{{gitlab}}/{{pipeline.project_path}}/tree/{{pipeline.branch}}">({{ pipeline.branch }})</a>
+                  <a target="_blank" title="overview of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/">{{ pipeline.project }}</a> <a target="_blank" title="file tree branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/tree/{{pipeline.branch}}">({{ pipeline.branch }})</a>
                 </div>
                 <div class="meta">{{ pipeline.author }}</div>
                 <div class="description">
                   {{ pipeline.title | truncate 40 }} <b>({{ pipeline.by_commit ? "commit" : "no commit" }})</b><br/>
-                  <a target="_blank" title="commit" href="https://{{gitlab}}/{{pipeline.project_path}}/commit/{{pipeline.sha1}}">{{pipeline.sha1 | truncate 8 }}</a>
+                  <a target="_blank" title="commit of branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/commit/{{pipeline.sha1}}">{{pipeline.sha1 | truncate 8 }}</a>
                 </div>
               </div>
               <div class="extra content">
                 <span class="left floated hashtag build-id">
-                  <a target="_blank" href="https://{{gitlab}}/{{pipeline.project_path}}/pipelines/{{ pipeline.id }}">
+                  <a target="_blank" title="pipeline {{ pipeline.id }} of {{ pipeline.project }}" href="https://{{gitlab}}/{{pipeline.project_path}}/pipelines/{{pipeline.id}}">
                   <i class="hashtag icon"></i>
                     {{ pipeline.id}}
                   </a>
