@@ -110,14 +110,14 @@ const app = new Vue({
     },
     fetchProjects: function() {
       const self = this
-      self.repositories.forEach(function(p){
+      self.repositories.forEach(function(repository){
         self.loading = true
-        axios.get('/projects/' + p.nameWithNamespace.replace('/', '%2F'))
+        axios.get('/projects/' + repository.nameWithNamespace.replace('/', '%2F'))
           .then(function (response) {
             self.loading = false
-            p = {project: p, data: response.data}
-            self.projects.push(p)
-            self.fetchBuild(p)
+            const project = {project: repository, data: response.data}
+            self.projects.push(project)
+            self.fetchBuild(project)
           })
           .catch(onError.bind(self))
       })
@@ -127,6 +127,7 @@ const app = new Vue({
       self.onError = null
       self.projects.forEach(function(p) {self.fetchBuild(p)})
       self.lastRun = lastRun()
+      self.pipelines.sort(function (a, b) { return a.project.localeCompare(b.project) })
     },
     fetchBuild: function(p) {
       const self = this
