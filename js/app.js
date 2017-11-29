@@ -57,6 +57,7 @@ const app = new Vue({
     this.setupDefaults()
 
     this.fetchProjects()
+    this.fetchGroups()
 
     var self = this
     setInterval(function(){
@@ -69,30 +70,33 @@ const app = new Vue({
       self.gitlab = getParameterByName("gitlab")
       self.token = getParameterByName("token")
       self.ref = getParameterByName("ref")
+      self.repositories = [];
+      self.groups = [];
 
       const repositoriesParameter = getParameterByName("projects")
-      if (repositoriesParameter === null) {
-        return
+      if (repositoriesParameter != null) {
+        const repositories = repositoriesParameter.split(",")
+        for (const x in repositories) {
+          try {
+            const repository = repositories[x].split('/')
+            const branch = repository[repository.length - 1].trim()
+            const projectName = repository[repository.length - 2].trim()
+            const nameWithNamespace = repository.slice(0, repository.length - 1).join('/')
+            self.repositories.push({
+              nameWithNamespace: nameWithNamespace,
+              projectName: projectName,
+              branch: branch,
+              key: nameWithNamespace + '/' + branch
+            })
+          }
+          catch (err) {
+            onError.bind(self)({message: "Wrong format", response: {status: 500}})
+          }
+        }
       }
-
-      const repositories = repositoriesParameter.split(",")
-      self.repositories = []
-      for (const x in repositories) {
-        try {
-          const repository = repositories[x].split('/')
-          const branch = repository[repository.length -1].trim()
-          const projectName = repository[repository.length -2].trim()
-          const nameWithNamespace = repository.slice(0, repository.length -1).join('/')
-          self.repositories.push({
-            nameWithNamespace: nameWithNamespace,
-            projectName: projectName,
-            branch: branch,
-            key: nameWithNamespace + '/' + branch
-          })
-        }
-        catch(err) {
-          onError.bind(self)({message: "Wrong format", response: {status: 500}})
-        }
+      const groupsParameter = getParameterByName("groups")
+      if (groupsParameter != null) {
+          self.groups = groupsParameter.split(",")
       }
     },
     configValid: function() {
@@ -120,6 +124,33 @@ const app = new Vue({
             self.fetchBuild(project)
           })
           .catch(onError.bind(self))
+      })
+    },
+    fetchGroups: function() {
+      const self = this
+      self.groups.forEach(function(g) {
+        self.loading = true
+        axios.get('/groups/' + g)
+          .then(function (response) {
+            self.loading = false
+            Object.keys(response.data.projects).forEach( function (key) {
+              project = response.data.projects[key];
+              if (project.jobs_enabled && !project.archived) {
+                const branch = project.default_branch;
+                const projectName = project.name;
+                const nameWithNamespace = project.name_with_namespace;
+                p = {
+                  nameWithNamespace: nameWithNamespace,
+                  projectName: projectName,
+                  branch: branch,
+                  key: nameWithNamespace + '/' + branch
+                }
+                p = {project: p, data: project};
+                self.projects.push(p);
+                self.fetchBuild(p)
+              }
+            })
+          }).catch(onError.bind(self))
       })
     },
     updateBuilds: function() {
