@@ -138,7 +138,7 @@ const app = new Vue({
               if (project.jobs_enabled && !project.archived) {
                 const branch = project.default_branch;
                 const projectName = project.name;
-                const nameWithNamespace = project.name_with_namespace;
+                const nameWithNamespace = project.path_with_namespace;
                 p = {
                   nameWithNamespace: nameWithNamespace,
                   projectName: projectName,
