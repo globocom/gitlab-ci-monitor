@@ -70,9 +70,9 @@
                     {{ pipeline.id}}
                   </a>
                 </span>
-                <span class="right floated calendar">
+                <span class="right floated calendar" title="{{ pipeline.started_at }}">
                   <i class="calendar icon"></i>
-                  {{ pipeline.started_at }}
+                  {{ pipeline.started_from_now }}
                 </span>
               </div>
            </div>

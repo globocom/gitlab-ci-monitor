@@ -187,12 +187,14 @@ const app = new Vue({
       const self = this
       axios.get('/projects/' + p.data.id + '/pipelines/' + commit.data.last_pipeline.id)
         .then(function(pipeline) {
-          const startedFromNow = moment(pipeline.data.started_at).fromNow()
+          const startedAt = pipeline.data.started_at
+          const startedFromNow = moment(startedAt).fromNow()
           const b = self.pipelinesMap[p.project.key]
           if (b !== undefined) {
             b.id = pipeline.data.id
             b.status = pipeline.data.status
-            b.started_at = startedFromNow
+            b.started_from_now = startedFromNow
+            b.started_at = startedAt
             b.author = commit.data.author_name
             b.title = commit.data.title
             b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
@@ -202,7 +204,8 @@ const app = new Vue({
               project: p.project.projectName,
               id: pipeline.data.id,
               status: pipeline.data.status,
-              started_at: startedFromNow,
+              started_from_now: startedFromNow,
+              started_at: startedAt,
               author: commit.data.author_name,
               project_path: p.project.nameWithNamespace,
               branch: p.project.branch,
