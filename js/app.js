@@ -78,17 +78,23 @@ const app = new Vue({
         for (const x in repositories) {
           try {
             const repository = repositories[x].split('/')
-            const branch = repository[repository.length - 1].trim()
-            const projectName = repository[repository.length - 2].trim()
-            const nameWithNamespace = repository.slice(0, repository.length - 1).join('/')
+            let branch, projectName, nameWithNamespace
+            if (repository.length < 3) {
+              branch = ""
+              projectName = repository[0].trim()
+              nameWithNamespace = repository.join('/')
+            } else {
+              branch = repository[repository.length - 1].trim()
+              projectName = repository[repository.length - 2].trim()
+              nameWithNamespace = repository.slice(0, repository.length - 1).join('/')
+            }
             self.repositories.push({
               nameWithNamespace: nameWithNamespace,
               projectName: projectName,
               branch: branch,
               key: nameWithNamespace + '/' + branch
             })
-          }
-          catch (err) {
+          } catch (err) {
             onError.bind(self)({ message: "Wrong format", response: { status: 500 } })
           }
         }
@@ -118,6 +124,9 @@ const app = new Vue({
         axios.get('/projects/' + repository.nameWithNamespace.replace('/', '%2F'))
           .then(function (response) {
             self.loading = false
+            if (repository.branch === "") {
+              repository.branch = response.data.default_branch
+            }
             const project = { project: repository, data: response.data }
             self.projects.push(project)
             self.fetchBuild(project)
