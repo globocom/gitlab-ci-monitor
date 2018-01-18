@@ -3,7 +3,7 @@
 A simple dashboard for monitoring [GitLab CI][gitlab-ci] builds.
 **Alpha version**.
 
-Gitlab Support: 10.1.4 (API V4)
+Gitlab Support: 9.0 (API V4)
 
 [gitlab-ci]: https://about.gitlab.com/gitlab-ci/
 
@@ -21,7 +21,7 @@ in the query string:
 - **gitlab**: your gitlab server address (not needed if you deployed the monitor on the gitlab instance)
 - **token**: your gitlab token (if you deployed the monitor on the gitlab instance you may set this to `use_cookie`)
 - **projects**: a comma separated list of projects in the form GROUP_NAME/PROJECT_NAME/BRANCH_NAME you want to monitor.
-- **groups**: a comma separated list of groups 
+- **groups**: a comma separated list of groups
 
 Obviously either one of `groups` or `projects` need to be set.
 
