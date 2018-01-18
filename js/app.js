@@ -1,5 +1,4 @@
 const onError = function (error) {
-
   this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
 
   if(error.message !== undefined ) {
@@ -27,7 +26,7 @@ Vue.filter('truncate', function (text, stop, clamp) {
 })
 
 function lastRun() {
-  return moment().format('ddd, YYYY-MM-DD HH:mm:ss');
+  return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
 }
 
 // Used by vue
@@ -50,7 +49,7 @@ const app = new Vue({
     this.loadConfig()
 
     if (!this.configValid()) {
-      onError.bind(this)({message: "Wrong format", response: {status: 500}})
+      onError.bind(this)({ message: "Wrong format", response: { status: 500 } })
       return
     }
 
@@ -60,7 +59,7 @@ const app = new Vue({
     this.fetchGroups()
 
     var self = this
-    setInterval(function(){
+    setInterval(function() {
       self.updateBuilds()
     }, 60000)
   },
@@ -70,8 +69,8 @@ const app = new Vue({
       self.gitlab = getParameterByName("gitlab")
       self.token = getParameterByName("token")
       self.ref = getParameterByName("ref")
-      self.repositories = [];
-      self.groups = [];
+      self.repositories = []
+      self.groups = []
 
       const repositoriesParameter = getParameterByName("projects")
       if (repositoriesParameter != null) {
@@ -90,7 +89,7 @@ const app = new Vue({
             })
           }
           catch (err) {
-            onError.bind(self)({message: "Wrong format", response: {status: 500}})
+            onError.bind(self)({ message: "Wrong format", response: { status: 500 } })
           }
         }
       }
@@ -114,12 +113,12 @@ const app = new Vue({
     },
     fetchProjects: function() {
       const self = this
-      self.repositories.forEach(function(repository){
+      self.repositories.forEach(function(repository) {
         self.loading = true
         axios.get('/projects/' + repository.nameWithNamespace.replace('/', '%2F'))
           .then(function (response) {
             self.loading = false
-            const project = {project: repository, data: response.data}
+            const project = { project: repository, data: response.data }
             self.projects.push(project)
             self.fetchBuild(project)
           })
@@ -133,20 +132,20 @@ const app = new Vue({
         axios.get('/groups/' + g)
           .then(function (response) {
             self.loading = false
-            Object.keys(response.data.projects).forEach( function (key) {
-              project = response.data.projects[key];
+            Object.keys(response.data.projects).forEach(function(key) {
+              project = response.data.projects[key]
               if (project.jobs_enabled && !project.archived) {
-                const branch = project.default_branch;
-                const projectName = project.name;
-                const nameWithNamespace = project.path_with_namespace;
+                const branch = project.default_branch
+                const projectName = project.name
+                const nameWithNamespace = project.path_with_namespace
                 p = {
                   nameWithNamespace: nameWithNamespace,
                   projectName: projectName,
                   branch: branch,
                   key: nameWithNamespace + '/' + branch
                 }
-                p = {project: p, data: project};
-                self.projects.push(p);
+                p = { project: p, data: project }
+                self.projects.push(p)
                 self.fetchBuild(p)
               }
             })
@@ -158,7 +157,7 @@ const app = new Vue({
       self.onError = null
       self.projects.forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
-      self.pipelines.sort(function (a, b) { return a.project.localeCompare(b.project) })
+      self.pipelines.sort(function(a, b) { return a.project.localeCompare(b.project) })
     },
     fetchBuild: function(p) {
       const self = this
