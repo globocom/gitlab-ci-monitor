@@ -74,7 +74,7 @@ const app = new Vue({
             let branch, projectName, nameWithNamespace
             if (repository.length < 3) {
               branch = ""
-              projectName = repository[0].trim()
+              projectName = repository[repository.length - 1].trim()
               nameWithNamespace = repository.join('/')
             } else {
               branch = repository[repository.length - 1].trim()
@@ -94,7 +94,7 @@ const app = new Vue({
       }
       const groupsParameter = getParameterByName("groups")
       if (groupsParameter != null) {
-          self.groups = groupsParameter.split(",")
+        self.groups = groupsParameter.split(",")
       }
     },
     validateConfig: function() {
@@ -141,19 +141,18 @@ const app = new Vue({
         axios.get('/groups/' + g)
           .then(function (response) {
             self.loading = false
-            Object.keys(response.data.projects).forEach(function(key) {
-              project = response.data.projects[key]
+            response.data.projects.forEach(function(project) {
               if (project.jobs_enabled && !project.archived) {
                 const branch = project.default_branch
                 const projectName = project.name
                 const nameWithNamespace = project.path_with_namespace
-                p = {
+                const data = {
                   nameWithNamespace: nameWithNamespace,
                   projectName: projectName,
                   branch: branch,
                   key: nameWithNamespace + '/' + branch
                 }
-                p = { project: p, data: project }
+                const p = { project: data, data: project }
                 self.projects.push(p)
                 self.fetchBuild(p)
               }
