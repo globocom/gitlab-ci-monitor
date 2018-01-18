@@ -156,36 +156,31 @@ const app = new Vue({
     updateBuilds: function() {
       const self = this
       self.onError = null
-      self.projects.forEach(function(p) {self.fetchBuild(p)})
+      self.projects.forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
       self.pipelines.sort(function (a, b) { return a.project.localeCompare(b.project) })
     },
     fetchBuild: function(p) {
       const self = this
 
-      function hasPipeline(commit) {
-        return commit.data.last_pipeline !== null && commit.data.last_pipeline.id !== undefined
-      }
-
-      function isNewOrStaleProject(commit) {
-        // Either this is a fresh project or the last_pipeline did not change between retrievals (status or id)
-        return self.pipelinesMap[p.project.key] === undefined ||
-          self.pipelinesMap[p.project.key].id !== commit.data.last_pipeline.id ||
-          self.pipelinesMap[p.project.key].status !== commit.data.last_pipeline.status
-      }
-
-      axios.get('/projects/' + p.data.id + '/repository/commits/' + p.project.branch)
-        .then(function(commit) {
-          // Either this is a fresh project or the last_pipeline did not change between retrievals
-          if (hasPipeline(commit) && isNewOrStaleProject(commit)) {
-            self.updateBuildInfo(p, commit)
+      axios.get('/projects/' + p.data.id + '/pipelines/?ref=' + p.project.branch)
+        .then(function(pipelines) {
+          if (pipelines.data.length === 0) {
+            return
           }
+          const commitId = pipelines.data[0].sha
+          const pipelineId = pipelines.data[0].id
+          axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
+            .then(function(commit) {
+              self.updateBuildInfo(p, commit, pipelineId)
+            })
+            .catch(onError.bind(self))
         })
         .catch(onError.bind(self))
     },
-    updateBuildInfo: function(p, commit) {
+    updateBuildInfo: function(p, commit, pipelineId) {
       const self = this
-      axios.get('/projects/' + p.data.id + '/pipelines/' + commit.data.last_pipeline.id)
+      axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at
           const startedFromNow = moment(startedAt).fromNow()
