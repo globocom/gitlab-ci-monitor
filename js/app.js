@@ -1,23 +1,15 @@
 const onError = function (error) {
-  this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
-
-  if(error.message !== undefined ) {
+  if (error.message === undefined) {
+    if (error.response && error.response.status === 401) {
+      this.onError = { message: "Unauthorized Access. Please check your token." }
+    } else {
+      this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
+    }
+  } else {
     this.onError = { message: error.message }
   }
 
-  if(error.message === "Wrong format") {
-    this.onError = { message: "Wrong projects format! Try: 'namespace/project/branch'" }
-  }
-
-  if(error.message === 'Network Error') {
-    this.onError = { message: "Network Error. Please check the Gitlab domain." }
-  }
-
-  if(error.response && error.response.status === 401) {
-    this.onError = { message: "Unauthorized Access. Please check your token." }
-  }
   console.log(this.onError.message)
-
 }
 
 // https://stackoverflow.com/questions/35070271/vue-js-components-how-to-truncate-the-text-in-the-slot-element-in-a-component
@@ -48,8 +40,9 @@ const app = new Vue({
   created: function() {
     this.loadConfig()
 
-    if (!this.configValid()) {
-      onError.bind(this)({ message: "Wrong format", response: { status: 500 } })
+    const error = this.validateConfig()
+    if (error !== undefined) {
+      onError.bind(this)(error)
       return
     }
 
@@ -95,7 +88,7 @@ const app = new Vue({
               key: nameWithNamespace + '/' + branch
             })
           } catch (err) {
-            onError.bind(self)({ message: "Wrong format", response: { status: 500 } })
+            onError.bind(self)({ message: "Wrong projects format! Try: 'namespace/project/branch'", response: { status: 500 } })
           }
         }
       }
@@ -104,8 +97,15 @@ const app = new Vue({
           self.groups = groupsParameter.split(",")
       }
     },
-    configValid: function() {
-      return !(this.repositories === null || this.token === null || this.gitlab === null && this.token !== "use_cookie")
+    validateConfig: function() {
+      const error = { response: { status: 500 } }
+      if (this.repositories.length === 0 && this.groups.length === 0) {
+        error.message = "You need to set projects or groups"
+        return error
+      } else if (this.repositories === null || this.token === null || this.gitlab === null && this.token !== "use_cookie") {
+        error.message = "Wrong format"
+        return error
+      }
     },
     setupDefaults: function() {
       if (this.token !== "use_cookie") {
