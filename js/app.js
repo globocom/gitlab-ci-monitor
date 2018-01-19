@@ -12,11 +12,6 @@ const onError = function (error) {
   console.log(this.onError.message)
 }
 
-// https://stackoverflow.com/questions/35070271/vue-js-components-how-to-truncate-the-text-in-the-slot-element-in-a-component
-Vue.filter('truncate', function (text, stop, clamp) {
-  return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
-})
-
 function lastRun() {
   return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
 }
@@ -207,7 +202,6 @@ const app = new Vue({
             b.started_at = startedAt
             b.author = commit.data.author_name
             b.title = commit.data.title
-            b.by_commit = pipeline.data.before_sha !== "0000000000000000000000000000000000000000"
             b.sha1 = commit.data.id
           } else {
             const project = {
@@ -220,7 +214,6 @@ const app = new Vue({
               project_path: p.project.nameWithNamespace,
               branch: p.project.branch,
               title: commit.data.title,
-              by_commit: pipeline.data.before_sha !== "0000000000000000000000000000000000000000",
               sha1: commit.data.id
             }
             self.pipelines.push(project)

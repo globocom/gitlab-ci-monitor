@@ -59,8 +59,8 @@
                 </div>
                 <div class="meta">{{ pipeline.author }}</div>
                 <div class="description">
-                  {{ pipeline.title | truncate 40 }} <b>{{ pipeline.by_commit ? "" : "(no commit)" }}</b><br/>
-                  <a target="_blank" title="commit of branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/commit/{{pipeline.sha1}}">{{pipeline.sha1 | truncate 8 }}</a>
+                  <div class="title">{{ pipeline.title }}</div>
+                  <a target="_blank" title="commit of branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/commit/{{pipeline.sha1}}">{{pipeline.sha1 }}</a>
                 </div>
               </div>
               <div class="extra content">
