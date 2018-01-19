@@ -26,7 +26,7 @@ function lastRun() {
 const app = new Vue({
   el: '#app',
   data: {
-    projects: [],
+    projects: {},
     pipelines: [],
     pipelinesMap: {},
     token: null,
@@ -67,7 +67,11 @@ const app = new Vue({
 
       const repositoriesParameter = getParameterByName("projects")
       if (repositoriesParameter != null) {
-        const repositories = repositoriesParameter.split(",")
+        const uniqueRepos = {}
+        let repositories = repositoriesParameter.split(",").forEach(function(repo) {
+          uniqueRepos[repo.trim()] = true
+        })
+        repositories = Object.keys(uniqueRepos)
         for (const x in repositories) {
           try {
             const repository = repositories[x].split('/')
@@ -128,8 +132,10 @@ const app = new Vue({
               repository.branch = response.data.default_branch
             }
             const project = { project: repository, data: response.data }
-            self.projects.push(project)
-            self.fetchBuild(project)
+            if (self.projects[repository.nameWithNamespace] === undefined) {
+              self.projects[repository.nameWithNamespace] = project
+              self.fetchBuild(project)
+            }
           })
           .catch(onError.bind(self))
       })
@@ -153,8 +159,10 @@ const app = new Vue({
                   key: nameWithNamespace + '/' + branch
                 }
                 const p = { project: data, data: project }
-                self.projects.push(p)
-                self.fetchBuild(p)
+                if (self.projects[project.path_with_namespace] === undefined) {
+                  self.projects[project.path_with_namespace] = p
+                  self.fetchBuild(p)
+                }
               }
             })
           }).catch(onError.bind(self))
@@ -163,7 +171,7 @@ const app = new Vue({
     updateBuilds: function() {
       const self = this
       self.onError = null
-      self.projects.forEach(function(p) { self.fetchBuild(p) })
+      Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
       self.pipelines.sort(function(a, b) { return a.project.localeCompare(b.project) })
     },

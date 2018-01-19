@@ -23,7 +23,7 @@ in the query string:
 - **projects**: a comma separated list of projects in the form GROUP_NAME/PROJECT_NAME/BRANCH_NAME you want to monitor.
 - **groups**: a comma separated list of groups
 
-Obviously either one of `groups` or `projects` need to be set.
+At least one of `groups` or `projects` need to be set.
 
 Example:
 
