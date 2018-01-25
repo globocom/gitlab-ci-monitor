@@ -59,15 +59,15 @@
                 </div>
                 <div class="meta">{{ pipeline.author }}</div>
                 <div class="description">
-                  <div class="title">{{ pipeline.title }}</div>
-                  <a target="_blank" title="commit of branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/commit/{{pipeline.sha1}}">{{pipeline.sha1 }}</a>
+                  <a target="_blank" title="pipeline {{ pipeline.id }} of {{ pipeline.project }}" href="https://{{gitlab}}/{{pipeline.project_path}}/pipelines/{{pipeline.id}}">
+                    <div class="title">{{ pipeline.title }}</div>
+                  </a>
                 </div>
               </div>
               <div class="extra content">
                 <span class="left floated hashtag build-id">
-                  <a target="_blank" title="pipeline {{ pipeline.id }} of {{ pipeline.project }}" href="https://{{gitlab}}/{{pipeline.project_path}}/pipelines/{{pipeline.id}}">
-                  <i class="hashtag icon"></i>
-                    {{ pipeline.id}}
+                    <a target="_blank" title="commit {{pipeline.sha1.substring(0, 8)}} of branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/commit/{{pipeline.sha1}}">                  <i class="hashtag icon"></i>
+                    {{pipeline.sha1.substring(0, 8)}}
                   </a>
                 </span>
                 <span class="right floated calendar" title="{{ pipeline.started_at }}">
