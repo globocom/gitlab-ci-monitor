@@ -23,6 +23,7 @@ body {
 }
 
 .description .title, .description a {
+  color: white !important;
   display: block;
   text-overflow: ellipsis;
   overflow: hidden;
