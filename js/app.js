@@ -127,8 +127,8 @@ const app = new Vue({
               repository.branch = response.data.default_branch
             }
             const project = { project: repository, data: response.data }
-            if (self.projects[repository.nameWithNamespace] === undefined) {
-              self.projects[repository.nameWithNamespace] = project
+            if (self.projects[repository.key] === undefined) {
+              self.projects[repository.key] = project
               self.fetchBuild(project)
             }
           })
