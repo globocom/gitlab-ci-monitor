@@ -71,15 +71,22 @@ const app = new Vue({
           try {
             const repository = repositories[x].split('/')
             let branch, projectName, nameWithNamespace
-            if (repository.length < 3) {
+            if (repository.length < 3) { /* when no branch is defined */
               branch = ""
               projectName = repository[repository.length - 1].trim()
               nameWithNamespace = repository.join('/')
-            } else {
+            }
+            if (repository.length == 3) { /* when a branch is defined */
               branch = repository[repository.length - 1].trim()
               projectName = repository[repository.length - 2].trim()
               nameWithNamespace = repository.slice(0, repository.length - 1).join('/')
             }
+            if (repository.length > 3) { /* when project are related to subgroups. defining a branch is MANDATORY */
+              branch = repository.splice(repository.length - 1, 1)[0].trim()
+              projectName = repository.splice(repository.length - 1, 1)[0].trim()
+              nameWithNamespace = repository.concat(projectName).join('/')
+            }
+
             self.repositories.push({
               nameWithNamespace: nameWithNamespace,
               projectName: projectName,
@@ -120,7 +127,7 @@ const app = new Vue({
       const self = this
       self.repositories.forEach(function(repository) {
         self.loading = true
-        axios.get('/projects/' + repository.nameWithNamespace.replace('/', '%2F'))
+        axios.get('/projects/' + repository.nameWithNamespace.replace(/\//g, '%2F'))
           .then(function (response) {
             self.loading = false
             if (repository.branch === "") {
