@@ -16,6 +16,21 @@ function lastRun() {
   return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
 }
 
+function statusPriority(status) {
+    switch (status) {
+        case "failed":
+            return 1;
+        case "running":
+            return 2;
+        case "pending":
+            return 3;
+        case "canceled":
+            return 4;
+        default:
+            return 5;
+    }
+}
+
 // Used by vue
 // noinspection JSUnusedGlobalSymbols
 const app = new Vue({
@@ -49,7 +64,7 @@ const app = new Vue({
     var self = this
     setInterval(function() {
       self.updateBuilds()
-    }, 60000)
+  }, 60000)
   },
   methods: {
     loadConfig: function() {
@@ -175,7 +190,12 @@ const app = new Vue({
       self.onError = null
       Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
-      self.pipelines.sort(function(a, b) { return a.project.localeCompare(b.project) })
+      self.pipelines.sort(function(a, b) {
+          if (statusPriority(a.status) != statusPriority(b.status)) {
+              return statusPriority(a.status) - statusPriority(b.status);
+          }
+          return a.project.localeCompare(b.project)
+      })
     },
     fetchBuild: function(p) {
       const self = this
