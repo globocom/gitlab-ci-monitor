@@ -72,8 +72,14 @@ const app = new Vue({
       self.gitlab = getParameterByName("gitlab")
       self.token = getParameterByName("token")
       self.ref = getParameterByName("ref")
+      self.blacklist = []
       self.repositories = []
       self.groups = []
+
+      const blacklistParameter = getParameterByName("blacklist");
+      if (blacklistParameter != null) {
+        self.blacklist = getParameterByName("blacklist").split(",")
+      }
 
       const repositoriesParameter = getParameterByName("projects")
       if (repositoriesParameter != null) {
@@ -117,6 +123,14 @@ const app = new Vue({
       if (groupsParameter != null) {
         self.groups = groupsParameter.split(",")
       }
+    },
+    blacklisted: function(p) {
+        for (var i = 0; i < this.blacklist.length; i++) {
+            if (this.blacklist[i] == p) {
+                return true;
+            }
+        }
+        return false;
     },
     validateConfig: function() {
       const error = { response: { status: 500 } }
@@ -165,7 +179,7 @@ const app = new Vue({
           .then(function (response) {
             self.loading = false
             response.data.projects.forEach(function(project) {
-              if (project.jobs_enabled && !project.archived) {
+              if (project.jobs_enabled && !project.archived && !self.blacklisted(project.name)) {
                 const branch = project.default_branch
                 const projectName = project.name
                 const nameWithNamespace = project.path_with_namespace
