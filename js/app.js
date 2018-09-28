@@ -16,21 +16,6 @@ function lastRun() {
   return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
 }
 
-function statusPriority(status) {
-    switch (status) {
-        case "failed":
-            return 1;
-        case "running":
-            return 2;
-        case "pending":
-            return 3;
-        case "canceled":
-            return 4;
-        default:
-            return 5;
-    }
-}
-
 // Used by vue
 // noinspection JSUnusedGlobalSymbols
 const app = new Vue({
@@ -124,13 +109,29 @@ const app = new Vue({
         self.groups = groupsParameter.split(",")
       }
     },
-    blacklisted: function(p) {
+    blacklisted: function(project) {
         for (var i = 0; i < this.blacklist.length; i++) {
-            if (this.blacklist[i] == p) {
+            if (this.blacklist[i] == project) {
                 return true;
             }
         }
         return false;
+    },
+    statusPriority: function(status) {
+        switch (status) {
+            case "failed":
+                return 1;
+            case "running":
+                return 2;
+            case "pending":
+                return 3;
+            case "canceled":
+                return 4;
+            case "rotten":
+                return 5;
+            default:
+                return 6;
+        }
     },
     validateConfig: function() {
       const error = { response: { status: 500 } }
@@ -205,8 +206,8 @@ const app = new Vue({
       Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
       self.pipelines.sort(function(a, b) {
-          if (statusPriority(a.status) != statusPriority(b.status)) {
-              return statusPriority(a.status) - statusPriority(b.status);
+          if (self.statusPriority(a.status) != self.statusPriority(b.status)) {
+              return self.statusPriority(a.status) - self.statusPriority(b.status);
           }
           return a.project.localeCompare(b.project)
       })
@@ -231,6 +232,7 @@ const app = new Vue({
     },
     updateBuildInfo: function(p, commit, pipelineId) {
       const self = this
+      const rottenThreshold = 2 * 24 * 60 * 60 * 1000; // no build since 2 days => rotten
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at
@@ -238,7 +240,7 @@ const app = new Vue({
           const b = self.pipelinesMap[p.project.key]
           if (b !== undefined) {
             b.id = pipeline.data.id
-            b.status = pipeline.data.status
+            b.status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? "rotten" : pipeline.data.status
             b.started_from_now = startedFromNow
             b.started_at = startedAt
             b.author = commit.data.author_name
@@ -248,7 +250,7 @@ const app = new Vue({
             const project = {
               project: p.project.projectName,
               id: pipeline.data.id,
-              status: pipeline.data.status,
+              status: Date.now() - Date.parse(startedAt) >= rottenThreshold ? "rotten" : pipeline.data.status,
               started_from_now: startedFromNow,
               started_at: startedAt,
               author: commit.data.author_name,
