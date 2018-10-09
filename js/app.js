@@ -1,3 +1,11 @@
+import Vue from 'vue';
+import axios from 'axios';
+import { format, distanceInWordsToNow } from 'date-fns';
+
+import '../css/style.css';
+
+import getParameterByName from './utils';
+
 const onError = function (error) {
   if (error.message === undefined) {
     if (error.response && error.response.status === 401) {
@@ -13,7 +21,7 @@ const onError = function (error) {
 }
 
 function lastRun() {
-  return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
+  return format('ddd, YYYY-MM-DD HH:mm:ss')
 }
 
 // Used by vue
@@ -213,7 +221,7 @@ const app = new Vue({
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at
-          const startedFromNow = moment(startedAt).fromNow()
+          const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
           const b = self.pipelinesMap[p.project.key]
           if (b !== undefined) {
             b.id = pipeline.data.id
@@ -257,3 +265,5 @@ const app = new Vue({
     }
   },
 })
+
+export default app;

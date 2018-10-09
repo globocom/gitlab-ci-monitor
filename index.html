@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/message.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
-  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -31,11 +30,11 @@
       </div>
       <div v-show="onError" class="row">
         <div class="eight wide column centered ">
-          <div class="ui red message">{{onError.message}}</div>
+          <div class="ui red message" v-if="onError">{{onError.message}}</div>
         </div>
       </div>
       <div v-show="invalidConfig" class="row">
-        <div class="eight wide column centered ">
+        <div class="eight wide column centered">
           <div class="ui attached message">
             <div class="header">
               Invalid Configuration
@@ -92,12 +91,5 @@
       </div>
     </div>
   </div>
-
-
-  <script src="js/vue.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/moment.min.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/app.js"></script>
 </body>
 </html>
