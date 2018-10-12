@@ -30,7 +30,21 @@ const app = new Vue({
     loading: false,
     invalidConfig: false,
     lastRun: lastRun(),
-    onError: null
+    onError: null,
+    sortField: "project",
+    reverseOrder: false,
+    availableSorts: [
+      {
+        field: "project",
+        icon: "alphabet",
+        text: "Order by project name"
+      },
+      {
+        field: "status",
+        icon: "content",
+        text: "Order by status"
+      }
+    ]
   },
   created: function() {
     this.loadConfig()
@@ -175,7 +189,14 @@ const app = new Vue({
       self.onError = null
       Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
-      self.pipelines.sort(function(a, b) { return a.project.localeCompare(b.project) })
+    },
+    changeOrder: function(field){
+      if (this.sortField == field)
+        this.reverseOrder = !this.reverseOrder
+      else {
+        this.sortField = field
+        this.reverseOrder = false
+      }
     },
     fetchBuild: function(p) {
       const self = this
@@ -228,6 +249,18 @@ const app = new Vue({
           }
         })
         .catch(onError.bind(self))
+    },
+    isSortedBy: function(field){
+      return field == this.sortField
     }
-  }
+  },
+  computed: {
+    sortedPipelines: function() {
+      var self = this;
+      return self.pipelines.sort(function(a,b){
+        var comparison = a[self.sortField].localeCompare(b[self.sortField])
+        return self.reverseOrder ? -comparison : comparison
+      })
+    }
+  },
 })

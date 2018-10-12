@@ -25,6 +25,13 @@
               <img class="logo" src="images/gitlab-logo.svg"/>
             </div>
             <div class="six wide column">
+              <div class="ui buttons right floated">
+                <a v-for="sort in availableSorts" v-on:click="changeOrder(sort.field)"
+                  v-bind:class="{active: isSortedBy(sort.field), ui: true, button: true}"
+                  v-bind:title="sort.text">
+                  <i v-bind:class="[sort.icon, (reverseOrder && isSortedBy(sort.field) ? 'descending' : 'ascending'), 'sort', 'icon']"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -63,7 +70,7 @@
       <div class="row builds">
         <div class="sixteen wide column">
           <div class="ui stackable cards">
-            <div v-for="pipeline in pipelines" class="card {{pipeline.status}}">
+            <div v-for="pipeline in sortedPipelines" class="card {{pipeline.status}}">
               <div class="content">
                 <div class="header project-name">
                   <a target="_blank" title="overview of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/">{{ pipeline.project }}</a> <a target="_blank" title="file tree branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/tree/{{pipeline.branch}}">({{ pipeline.branch }})</a>
