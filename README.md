@@ -22,13 +22,14 @@ in the query string:
 - **token**: your gitlab token (if you deployed the monitor on the gitlab instance you may set this to `use_cookie`)
 - **projects**: a comma separated list of projects in the form GROUP_NAME/PROJECT_NAME/BRANCH_NAME you want to monitor.
 - **groups**: a comma separated list of groups
+- **order**: a comma separated list of fields to order projects, optionally followed by .asc or .desc modifier
 
 At least one of `groups` or `projects` need to be set.
 
 Example:
 
 ```
-http://gitlab-ci-monitor.example.com/?gitlab=gitlab.example.com&token=12345&projects=namespace/project1/master,namespace/project1/branch1,namespace/project2/master
+http://gitlab-ci-monitor.example.com/?gitlab=gitlab.example.com&token=12345&projects=namespace/project1/master,namespace/project1/branch1,namespace/project2/master&order=status.desc,project,author.asc
 ```
 
 With these parameters, it will try to fetch the list of projects that this
