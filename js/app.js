@@ -30,7 +30,11 @@ const app = new Vue({
     loading: false,
     invalidConfig: false,
     lastRun: lastRun(),
-    onError: null
+    onError: null,
+    orderFields: {
+      field: "project",
+      dir: "asc"
+    }
   },
   created: function() {
     this.loadConfig()
@@ -102,6 +106,15 @@ const app = new Vue({
       if (groupsParameter != null) {
         self.groups = groupsParameter.split(",")
       }
+
+      var order = getParameterByName("order") || "project.asc"
+      self.sortFields = order.split(",").map(function(sortField, index){
+        var splittedSortField = sortField.split(".")
+        return {
+          field: splittedSortField[0],
+          dir: splittedSortField[1] || "asc"
+        }
+      })
     },
     validateConfig: function() {
       const error = { response: { status: 500 } }
@@ -175,7 +188,6 @@ const app = new Vue({
       self.onError = null
       Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
-      self.pipelines.sort(function(a, b) { return a.project.localeCompare(b.project) })
     },
     fetchBuild: function(p) {
       const self = this
@@ -229,5 +241,18 @@ const app = new Vue({
         })
         .catch(onError.bind(self))
     }
-  }
+  },
+  computed: {
+    sortedPipelines: function() {
+      var self = this;
+      return this.pipelines.sort(function(a,b){
+        var result = 0;
+        self.sortFields.forEach(function(sortField, index){
+          if (result == 0)
+            result = a[sortField.field].localeCompare(b[sortField.field]) * (sortField.dir == "desc" ? -1 : 1)
+        })
+        return result
+      })
+    }
+  },
 })
