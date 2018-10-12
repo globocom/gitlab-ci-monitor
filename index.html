@@ -16,7 +16,18 @@
   <div id="app">
     <div class="ui four column grid">
       <div class="row">
-        <div class="ui yellow message">Last updated at {{lastRun}}</div> <img class="logo" src="images/gitlab-logo.svg"/>
+        <div class="sixteen wide column">
+          <div class="ui grid">
+            <div class="six wide column">
+              <div class="ui yellow message">Last updated at {{lastRun}}</div>
+            </div>
+            <div class="four wide column">
+              <img class="logo" src="images/gitlab-logo.svg"/>
+            </div>
+            <div class="six wide column">
+            </div>
+          </div>
+        </div>
       </div>
       <div v-show="onError" class="row">
         <div class="eight wide column centered ">
