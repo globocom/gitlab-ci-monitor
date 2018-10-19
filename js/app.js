@@ -159,6 +159,7 @@ const app = new Vue({
       const self = this
       self.groups.forEach(function(g) {
         self.loading = true
+        g = encodeURIComponent(g);
         axios.get('/groups/' + g)
           .then(function (response) {
             self.loading = false
