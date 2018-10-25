@@ -1,0 +1,25 @@
+{
+  "id": 23827851,
+  "sha": "25fdf4ca24b7a97e9a895abc43fc54128f218ddd",
+  "ref": "master",
+  "status": "canceled",
+  "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827851",
+  "before_sha": "30bc42a81c0c01e1ec51eea7f3ebdc2e5332bf64",
+  "tag": false,
+  "yaml_errors": null,
+  "user": {
+    "id": 745415,
+    "name": "Guilherme Varandas",
+    "username": "gvarandas",
+    "state": "active",
+    "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/745415/avatar.png",
+    "web_url": "https://gitlab.com/gvarandas"
+  },
+  "created_at": "2018-06-14T05:00:24.005Z",
+  "updated_at": "2018-06-14T05:00:49.368Z",
+  "started_at": "2018-06-14T05:00:25.181Z",
+  "finished_at": "2018-06-14T05:00:49.357Z",
+  "committed_at": null,
+  "duration": 24,
+  "coverage": null
+}

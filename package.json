@@ -9,7 +9,7 @@
     "build": "webpack --env.mode production",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -43,5 +43,11 @@
     "axios": "^0.18.0",
     "date-fns": "^1.29.0",
     "vue": "^1.0.27"
+  },
+  "jest": {
+    "testURL": "http://localhost?gitlab=gitlab.test.com&token=12345&projects=namespace/project1/branch1,namespace/project2/master",
+    "moduleNameMapper": {
+      "\\.(css)$": "<rootDir>/js/__mocks__/style-mock.js"
+    }
   }
 }
