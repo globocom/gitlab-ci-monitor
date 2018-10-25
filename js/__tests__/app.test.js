@@ -6,6 +6,9 @@ import buildsMock from '../__mocks__/builds.json';
 import commitMock from '../__mocks__/commit.json';
 import pipelineMock from '../__mocks__/pipeline.json';
 
+jest.useFakeTimers();
+Date.now = jest.fn(() => 1538362800000);
+
 async function createVm() {
   return require('../app').default;
 }
@@ -20,14 +23,17 @@ function setupAxiosMock() {
   mock.onGet('/projects/6944716/repository/commits/25fdf4ca24b7a97e9a895abc43fc54128f218ddd').reply(200, commitMock);
 }
 
-setupAxiosMock();
-
-describe('testing app', () => {
+describe('Testing app.js', () => {
   let app;
 
   beforeAll(async () => {
+    setupAxiosMock();
     document.body.innerHTML = '<div id="app"></div>';
     app = await createVm();
+  });
+
+  test('snapshotting', () => {
+    expect(app).toMatchSnapshot();
   });
 
   test('app.methods.loadConfig', () => {
@@ -60,15 +66,19 @@ describe('testing app', () => {
     });
   });
 
-  test('app.methods.fetchProjects', async () => {
+  test('app.methods.fetchProjects', () => {
     expect(app.projects['namespace/project1/branch1'].data).toEqual(projectMock);
     expect(app.projects['namespace/project2/master'].data).toEqual(projectMock);
   });
 
   test('app.methods.updateBuilds', async () => {
-    // app.
-    console.log('app.groups', app.lastRun);
-    // expect(app.projects['namespace/project1/branch1'].data).toEqual(projectMock);
-    // expect(app.projects['namespace/project2/master'].data).toEqual(projectMock);
+    const now = app.lastRun;
+    jest.spyOn(app, 'updateBuilds');
+    jest.spyOn(Date, 'now').mockImplementationOnce(() => 1540436400000);
+    expect(app.updateBuilds).toHaveBeenCalledTimes(0);
+    jest.advanceTimersByTime(70000);
+    expect(app.updateBuilds).toHaveBeenCalledTimes(1);
+    const then = app.lastRun;
+    expect(now).not.toEqual(then);
   });
 });
