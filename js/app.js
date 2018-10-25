@@ -21,7 +21,7 @@ const onError = function (error) {
 }
 
 function lastRun() {
-  return format('ddd, YYYY-MM-DD HH:mm:ss')
+  return format(Date.now(), 'YYYY-MM-DD - HH:mm:ss')
 }
 
 // Used by vue
@@ -116,7 +116,7 @@ const app = new Vue({
       }
 
       var order = getParameterByName("order") || "project.asc"
-      self.sortFields = order.split(",").map(function(sortField, index){
+      self.sortFields = order.split(",").map(function(sortField){
         var splittedSortField = sortField.split(".")
         return {
           field: splittedSortField[0],
@@ -256,7 +256,7 @@ const app = new Vue({
       var self = this;
       return this.pipelines.sort(function(a,b){
         var result = 0;
-        self.sortFields.forEach(function(sortField, index){
+        self.sortFields.forEach(function(sortField){
           if (result == 0)
             result = a[sortField.field].localeCompare(b[sortField.field]) * (sortField.dir == "desc" ? -1 : 1)
         })
