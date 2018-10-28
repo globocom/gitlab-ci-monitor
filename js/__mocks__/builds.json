@@ -1,107 +1,23 @@
 [
   {
-    "id": 23827851,
-    "sha": "25fdf4ca24b7a97e9a895abc43fc54128f218ddd",
+    "id": 12345,
+    "sha": "sha1",
     "ref": "master",
     "status": "canceled",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827851"
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/12345"
   },
   {
-    "id": 23827402,
-    "sha": "30bc42a81c0c01e1ec51eea7f3ebdc2e5332bf64",
+    "id": 23456,
+    "sha": "sha2",
     "ref": "master",
     "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827402"
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/23456"
   },
   {
-    "id": 23827026,
-    "sha": "0d0844859daeb340e191e8ec5724d32c5d10788a",
+    "id": 34567,
+    "sha": "sha3",
     "ref": "master",
     "status": "canceled",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827026"
-  },
-  {
-    "id": 23827018,
-    "sha": "0d0844859daeb340e191e8ec5724d32c5d10788a",
-    "ref": "master",
-    "status": "canceled",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827018"
-  },
-  {
-    "id": 23826999,
-    "sha": "0d0844859daeb340e191e8ec5724d32c5d10788a",
-    "ref": "master",
-    "status": "canceled",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23826999"
-  },
-  {
-    "id": 23826000,
-    "sha": "1a81799b7d9aca2a121a5fb2be5bcd31ed37b693",
-    "ref": "master",
-    "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23826000"
-  },
-  {
-    "id": 23825870,
-    "sha": "26af362e79b56f8cd6c183acc226435620f82351",
-    "ref": "master",
-    "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23825870"
-  },
-  {
-    "id": 23825779,
-    "sha": "ea7b2439cfa3c2e218fa3ae7b56b45c550dd412f",
-    "ref": "master",
-    "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23825779"
-  },
-  {
-    "id": 23825491,
-    "sha": "c780f4025655168b17bf73064a008981e71b59c1",
-    "ref": "master",
-    "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23825491"
-  },
-  {
-    "id": 23824999,
-    "sha": "a2cfe55950c9e67324d58fd99fe6dc5ca9fa8deb",
-    "ref": "master",
-    "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23824999"
-  },
-  {
-    "id": 23824579,
-    "sha": "3542dd16f4710e91e6aa378483716b2b68d9105c",
-    "ref": "master",
-    "status": "failed",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23824579"
-  },
-  {
-    "id": 23455335,
-    "sha": "96ebc23367efbc7d92e65582e488cade5c278909",
-    "ref": "master",
-    "status": "success",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23455335"
-  },
-  {
-    "id": 23455210,
-    "sha": "62e908c224a383de1450aee462dcfcd3393004f6",
-    "ref": "master",
-    "status": "failed",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23455210"
-  },
-  {
-    "id": 23455099,
-    "sha": "2adebd3fe58875bbc22452ee31bffd2f0ea8b8ea",
-    "ref": "master",
-    "status": "failed",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23455099"
-  },
-  {
-    "id": 23455033,
-    "sha": "72aaa4f6c2b6e0051e87f6a934c2dd9402851f60",
-    "ref": "master",
-    "status": "failed",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23455033"
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/34567"
   }
 ]

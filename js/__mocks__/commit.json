@@ -1,17 +1,17 @@
 {
-  "id": "25fdf4ca24b7a97e9a895abc43fc54128f218ddd",
+  "id": "12121212",
   "short_id": "25fdf4ca",
-  "title": "Corrigindo deploy APP_NAME",
+  "title": "Commit Title",
   "created_at": "2018-06-14T05:00:18.000Z",
   "parent_ids": [
-    "30bc42a81c0c01e1ec51eea7f3ebdc2e5332bf64"
+    "2323232323"
   ],
-  "message": "Corrigindo deploy APP_NAME\n\n",
-  "author_name": "Guilherme Varandas",
-  "author_email": "jgvarandas@gmail.com",
+  "message": "Commit message",
+  "author_name": "Test User",
+  "author_email": "test@email.com",
   "authored_date": "2018-06-14T05:00:18.000Z",
-  "committer_name": "Guilherme Varandas",
-  "committer_email": "jgvarandas@gmail.com",
+  "committer_name": "Test User",
+  "committer_email": "test@email.com",
   "committed_date": "2018-06-14T05:00:18.000Z",
   "stats": {
     "additions": 1,
@@ -21,10 +21,10 @@
   "status": "canceled",
   "last_pipeline": {
     "id": 23827851,
-    "sha": "25fdf4ca24b7a97e9a895abc43fc54128f218ddd",
+    "sha": "12121212",
     "ref": "master",
     "status": "canceled",
-    "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827851"
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/12345"
   },
   "project_id": 6944716
 }

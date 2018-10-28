@@ -1,19 +1,19 @@
 {
-  "id": 23827851,
-  "sha": "25fdf4ca24b7a97e9a895abc43fc54128f218ddd",
+  "id": 123456,
+  "sha": "sha_pipeline",
   "ref": "master",
   "status": "canceled",
-  "web_url": "https://gitlab.com/gvarandas/bsb-dev-festival-ci/pipelines/23827851",
-  "before_sha": "30bc42a81c0c01e1ec51eea7f3ebdc2e5332bf64",
+  "web_url": "https://gitlab.com/testuser/test-project/pipelines/123456",
+  "before_sha": "before_sha",
   "tag": false,
   "yaml_errors": null,
   "user": {
-    "id": 745415,
-    "name": "Guilherme Varandas",
-    "username": "gvarandas",
+    "id": 12345,
+    "name": "Test user",
+    "username": "testuser",
     "state": "active",
-    "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/745415/avatar.png",
-    "web_url": "https://gitlab.com/gvarandas"
+    "avatar_url": "https://assets.gitlab-static.net/uploads/-/system/user/avatar/123456/avatar.png",
+    "web_url": "https://gitlab.com/testuser"
   },
   "created_at": "2018-10-01T05:00:24.005Z",
   "updated_at": "2018-10-01T05:00:49.368Z",
