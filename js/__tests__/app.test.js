@@ -7,7 +7,7 @@ import commitMock from '../__mocks__/commit.json';
 import pipelineMock from '../__mocks__/pipeline.json';
 
 jest.useFakeTimers();
-Date.now = jest.fn(() => 1538362800000);
+Date.now = jest.fn(() => new Date(Date.UTC(2018, 9, 1, 0, 0, 0)).valueOf())
 
 async function createVm() {
   return require('../app').default;

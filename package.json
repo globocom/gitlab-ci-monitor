@@ -6,10 +6,10 @@
   "scripts": {
     "lint": "eslint .",
     "start": "webpack-dev-server",
-    "build": "webpack --env.mode production",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
-    "test": "jest"
+    "build": "webpack --env.mode production",
+    "test": "TZ=UTC jest"
   },
   "repository": {
     "type": "git",
