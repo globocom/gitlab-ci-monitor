@@ -218,6 +218,7 @@ const app = new Vue({
     },
     updateBuildInfo: function(p, commit, pipelineId) {
       const self = this
+
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at

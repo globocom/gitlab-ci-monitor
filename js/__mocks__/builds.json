@@ -1,0 +1,23 @@
+[
+  {
+    "id": 12345,
+    "sha": "sha1",
+    "ref": "master",
+    "status": "canceled",
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/12345"
+  },
+  {
+    "id": 23456,
+    "sha": "sha2",
+    "ref": "master",
+    "status": "success",
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/23456"
+  },
+  {
+    "id": 34567,
+    "sha": "sha3",
+    "ref": "master",
+    "status": "canceled",
+    "web_url": "https://gitlab.com/testuser/test-project/pipelines/34567"
+  }
+]
