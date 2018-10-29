@@ -59,6 +59,13 @@ rm -rf /usr/local/share/gitlab/monitor
 mkdir -p /usr/local/share/gitlab/monitor
 curl -s -L https://github.com/globocom/gitlab-ci-monitor/archive/master.tar.gz | tar xz -C /usr/local/share/gitlab/monitor --strip-components=1
 ```
+
+or
+
+```
+make install
+```
+
 * Now insert the following to your `/etc/gitlab/gitlab.rb` (the entry already exists but it commented):
 ```
 nginx['custom_gitlab_server_config'] = <<-NGINX_CONF
