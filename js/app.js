@@ -1,3 +1,11 @@
+import Vue from 'vue';
+import axios from 'axios';
+import { format, distanceInWordsToNow } from 'date-fns';
+
+import '../css/style.css';
+
+import getParameterByName from './utils';
+
 const onError = function (error) {
   if (error.message === undefined) {
     if (error.response && error.response.status === 401) {
@@ -13,7 +21,7 @@ const onError = function (error) {
 }
 
 function lastRun() {
-  return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
+  return format(Date.now(), 'YYYY-MM-DD - HH:mm:ss')
 }
 
 // Used by vue
@@ -30,7 +38,11 @@ const app = new Vue({
     loading: false,
     invalidConfig: false,
     lastRun: lastRun(),
-    onError: null
+    onError: null,
+    orderFields: {
+      field: "project",
+      dir: "asc"
+    }
   },
   created: function() {
     this.loadConfig()
@@ -102,6 +114,15 @@ const app = new Vue({
       if (groupsParameter != null) {
         self.groups = groupsParameter.split(",")
       }
+
+      var order = getParameterByName("order") || "project.asc"
+      self.sortFields = order.split(",").map(function(sortField){
+        var splittedSortField = sortField.split(".")
+        return {
+          field: splittedSortField[0],
+          dir: splittedSortField[1] || "asc"
+        }
+      })
     },
     validateConfig: function() {
       const error = { response: { status: 500 } }
@@ -146,6 +167,7 @@ const app = new Vue({
       const self = this
       self.groups.forEach(function(g) {
         self.loading = true
+        g = encodeURIComponent(g);
         axios.get('/groups/' + g)
           .then(function (response) {
             self.loading = false
@@ -175,7 +197,6 @@ const app = new Vue({
       self.onError = null
       Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
-      self.pipelines.sort(function(a, b) { return a.project.localeCompare(b.project) })
     },
     fetchBuild: function(p) {
       const self = this
@@ -200,7 +221,7 @@ const app = new Vue({
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at
-          const startedFromNow = moment(startedAt).fromNow()
+          const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
           const b = self.pipelinesMap[p.project.key]
           if (b !== undefined) {
             b.id = pipeline.data.id
@@ -229,5 +250,20 @@ const app = new Vue({
         })
         .catch(onError.bind(self))
     }
-  }
+  },
+  computed: {
+    sortedPipelines: function() {
+      var self = this;
+      return this.pipelines.sort(function(a,b){
+        var result = 0;
+        self.sortFields.forEach(function(sortField){
+          if (result == 0)
+            result = a[sortField.field].localeCompare(b[sortField.field]) * (sortField.dir == "desc" ? -1 : 1)
+        })
+        return result
+      })
+    }
+  },
 })
+
+export default app;
