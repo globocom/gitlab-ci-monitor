@@ -21,7 +21,7 @@ in the query string:
 - **gitlab**: your gitlab server address (not needed if you deployed the monitor on the gitlab instance)
 - **token**: your gitlab token (if you deployed the monitor on the gitlab instance you may set this to `use_cookie`)
 - **projects**: a comma separated list of projects in the form GROUP_NAME/PROJECT_NAME/BRANCH_NAME you want to monitor.
-- **groups**: a comma separated list of groups
+- **groups**: a comma separated list of groups or subgroups
 - **order**: a comma separated list of fields to order projects, optionally followed by .asc or .desc modifier
 
 At least one of `groups` or `projects` need to be set.
