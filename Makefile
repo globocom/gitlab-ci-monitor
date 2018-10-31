@@ -2,7 +2,7 @@ GITLAB_CI_MONITOR_URL = https://github.com/globocom/gitlab-ci-monitor/archive/ma
 
 .PHONY: install
 install:
-	rm -rf /usr/local/share/gitlab/monitor
+	rm -rf /usr/local/share/gitlab/monitor \
 		&& mkdir -p /usr/local/share/gitlab/monitor \
 		&& curl -s -L $(GITLAB_CI_MONITOR_URL) | tar xz -C /usr/local/share/gitlab/monitor --strip-components=1
 
