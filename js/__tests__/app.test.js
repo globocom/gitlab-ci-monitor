@@ -53,16 +53,16 @@ describe('Testing app.js', () => {
     // Validate Repositories
     expect(repositories.length).toEqual(2);
     expect(repositories[0]).toEqual({
-      key: "namespace/project1/branch1",
-      projectName: "project1",
+      key: 'namespace/project1/branch1',
+      projectName: 'project1',
       branch: 'branch1',
-      nameWithNamespace: "namespace/project1",
+      nameWithNamespace: 'namespace/project1',
     });
     expect(repositories[1]).toEqual({
-      key: "namespace/project2/master",
-      projectName: "project2",
+      key: 'namespace/project2/master',
+      projectName: 'project2',
       branch: 'master',
-      nameWithNamespace: "namespace/project2",
+      nameWithNamespace: 'namespace/project2',
     });
   });
 
