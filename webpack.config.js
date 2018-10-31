@@ -9,6 +9,7 @@ module.exports = ({ mode } = { mode: 'development' }) => {
   return {
     mode,
     entry: './js/app.js',
+    devtool: 'source-map',
     output: {
       filename: devMode ? '[name].js' : '[name].[hash].js',
       path: path.resolve(__dirname, 'dist')
