@@ -256,10 +256,11 @@ const app = new Vue({
           const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
           const b = self.pipelinesMap[p.project.key]
           const status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? "rotten" : pipeline.data.status
+          const statusPrio = self.statusPriority(status)
           if (b !== undefined) {
             b.id = pipeline.data.id
             b.status = status
-            b.statusPrio = self.statusPriority(status)
+            b.status_prio = statusPrio
             b.started_from_now = startedFromNow
             b.started_at = startedAt
             b.author = commit.data.author_name
@@ -270,7 +271,7 @@ const app = new Vue({
               project: p.project.projectName,
               id: pipeline.data.id,
               status: status,
-              statusPrio: self.statusPriority(status),
+              status_prio: statusPrio,
               started_from_now: startedFromNow,
               started_at: startedAt,
               author: commit.data.author_name,
