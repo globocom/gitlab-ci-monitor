@@ -1,9 +1,17 @@
+import Vue from 'vue';
+import axios from 'axios';
+import { format, distanceInWordsToNow } from 'date-fns';
+
+import '../css/style.css';
+
+import getParameterByName from './utils';
+
 const onError = function (error) {
   if (error.message === undefined) {
     if (error.response && error.response.status === 401) {
-      this.onError = { message: "Unauthorized Access. Please check your token." }
+      this.onError = { message: 'Unauthorized Access. Please check your token.' }
     } else {
-      this.onError = { message: "Something went wrong. Make sure the configuration is ok and your Gitlab is up and running."}
+      this.onError = { message: 'Something went wrong. Make sure the configuration is ok and your Gitlab is up and running.'}
     }
   } else {
     this.onError = { message: error.message }
@@ -13,7 +21,7 @@ const onError = function (error) {
 }
 
 function lastRun() {
-  return moment().format('ddd, YYYY-MM-DD HH:mm:ss')
+  return format(Date.now(), 'YYYY-MM-DD - HH:mm:ss')
 }
 
 // Used by vue
@@ -30,7 +38,11 @@ const app = new Vue({
     loading: false,
     invalidConfig: false,
     lastRun: lastRun(),
-    onError: null
+    onError: null,
+    orderFields: {
+      field: 'project',
+      dir: 'asc'
+    }
   },
   created: function() {
     this.loadConfig()
@@ -54,9 +66,9 @@ const app = new Vue({
   methods: {
     loadConfig: function() {
       const self = this
-      self.gitlab = getParameterByName("gitlab")
-      self.token = getParameterByName("token")
-      self.ref = getParameterByName("ref")
+      self.gitlab = getParameterByName('gitlab')
+      self.token = getParameterByName('token')
+      self.ref = getParameterByName('ref')
       self.blacklist = []
       self.repositories = []
       self.groups = []
@@ -66,10 +78,10 @@ const app = new Vue({
         self.blacklist = getParameterByName("blacklist").split(",")
       }
 
-      const repositoriesParameter = getParameterByName("projects")
+      const repositoriesParameter = getParameterByName('projects')
       if (repositoriesParameter != null) {
         const uniqueRepos = {}
-        let repositories = repositoriesParameter.split(",").forEach(function(repo) {
+        let repositories = repositoriesParameter.split(',').forEach(function(repo) {
           uniqueRepos[repo.trim()] = true
         })
         repositories = Object.keys(uniqueRepos)
@@ -78,7 +90,7 @@ const app = new Vue({
             const repository = repositories[x].split('/')
             let branch, projectName, nameWithNamespace
             if (repository.length < 3) { /* when no branch is defined */
-              branch = ""
+              branch = ''
               projectName = repository[repository.length - 1].trim()
               nameWithNamespace = repository.join('/')
             }
@@ -100,14 +112,23 @@ const app = new Vue({
               key: nameWithNamespace + '/' + branch
             })
           } catch (err) {
-            onError.bind(self)({ message: "Wrong projects format! Try: 'namespace/project/branch'", response: { status: 500 } })
+            onError.bind(self)({ message: 'Wrong projects format! Try: "namespace/project/branch"', response: { status: 500 } })
           }
         }
       }
-      const groupsParameter = getParameterByName("groups")
+      const groupsParameter = getParameterByName('groups')
       if (groupsParameter != null) {
-        self.groups = groupsParameter.split(",")
+        self.groups = groupsParameter.split(',')
       }
+
+      var order = getParameterByName('order') || 'project.asc'
+      self.sortFields = order.split(',').map(function(sortField){
+        var splittedSortField = sortField.split('.')
+        return {
+          field: splittedSortField[0],
+          dir: splittedSortField[1] || 'asc'
+        }
+      })
     },
     blacklisted: function(project) {
         for (var i = 0; i < this.blacklist.length; i++) {
@@ -136,20 +157,20 @@ const app = new Vue({
     validateConfig: function() {
       const error = { response: { status: 500 } }
       if (this.repositories.length === 0 && this.groups.length === 0) {
-        error.message = "You need to set projects or groups"
+        error.message = 'You need to set projects or groups'
         return error
-      } else if (this.repositories === null || this.token === null || this.gitlab === null && this.token !== "use_cookie") {
-        error.message = "Wrong format"
+      } else if (this.repositories === null || this.token === null || this.gitlab === null && this.token !== 'use_cookie') {
+        error.message = 'Wrong format'
         return error
       }
     },
     setupDefaults: function() {
-      if (this.token !== "use_cookie") {
-        axios.defaults.baseURL = "https://" + this.gitlab + "/api/v4"
+      if (this.token !== 'use_cookie') {
+        axios.defaults.baseURL = 'https://' + this.gitlab + '/api/v4'
         axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
       } else {
         // Running on the GitLab-Server...
-        axios.defaults.baseURL = "/api/v4"
+        axios.defaults.baseURL = '/api/v4'
         this.gitlab = location.hostname
       }
     },
@@ -160,7 +181,7 @@ const app = new Vue({
         axios.get('/projects/' + repository.nameWithNamespace.replace(/\//g, '%2F'))
           .then(function (response) {
             self.loading = false
-            if (repository.branch === "") {
+            if (repository.branch === '') {
               repository.branch = response.data.default_branch
             }
             const project = { project: repository, data: response.data }
@@ -176,6 +197,7 @@ const app = new Vue({
       const self = this
       self.groups.forEach(function(g) {
         self.loading = true
+        g = encodeURIComponent(g);
         axios.get('/groups/' + g)
           .then(function (response) {
             self.loading = false
@@ -233,10 +255,11 @@ const app = new Vue({
     updateBuildInfo: function(p, commit, pipelineId) {
       const self = this
       const rottenThreshold = 2 * 24 * 60 * 60 * 1000; // no build since 2 days => rotten
+
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at
-          const startedFromNow = moment(startedAt).fromNow()
+          const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
           const b = self.pipelinesMap[p.project.key]
           if (b !== undefined) {
             b.id = pipeline.data.id
@@ -265,5 +288,20 @@ const app = new Vue({
         })
         .catch(onError.bind(self))
     }
-  }
+  },
+  computed: {
+    sortedPipelines: function() {
+      var self = this;
+      return this.pipelines.sort(function(a,b){
+        var result = 0;
+        self.sortFields.forEach(function(sortField){
+          if (result == 0)
+            result = a[sortField.field].localeCompare(b[sortField.field]) * (sortField.dir == 'desc' ? -1 : 1)
+        })
+        return result
+      })
+    }
+  },
 })
+
+export default app;

@@ -9,22 +9,32 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/grid.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/components/message.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.4/semantic.min.css" />
-  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <div id="app">
     <div class="ui four column grid">
       <div class="row">
-        <div class="ui yellow message">Last updated at {{lastRun}}</div> <img class="logo" src="images/gitlab-logo.svg"/>
+        <div class="sixteen wide column">
+          <div class="ui grid">
+            <div class="six wide column">
+              <div class="ui yellow message">Last updated at {{lastRun}}</div>
+            </div>
+            <div class="four wide column">
+              <img class="logo" src="images/gitlab-logo.svg"/>
+            </div>
+            <div class="six wide column">
+            </div>
+          </div>
+        </div>
       </div>
       <div v-show="onError" class="row">
         <div class="eight wide column centered ">
-          <div class="ui red message">{{onError.message}}</div>
+          <div class="ui red message" v-if="onError">{{onError.message}}</div>
         </div>
       </div>
       <div v-show="invalidConfig" class="row">
-        <div class="eight wide column centered ">
+        <div class="eight wide column centered">
           <div class="ui attached message">
             <div class="header">
               Invalid Configuration
@@ -52,7 +62,7 @@
       <div class="row builds">
         <div class="sixteen wide column">
           <div class="ui four cards">
-            <div v-for="pipeline in pipelines" class="card {{pipeline.status}}">
+            <div v-for="pipeline in sortedPipelines" class="card {{pipeline.status}}">
               <div class="content">
                 <div class="header project-name">
                   <a target="_blank" title="overview of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/">{{ pipeline.project }}</a> <a target="_blank" title="file tree branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/tree/{{pipeline.branch}}">({{ pipeline.branch }})</a>
@@ -81,12 +91,5 @@
       </div>
     </div>
   </div>
-
-
-  <script src="js/vue.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/moment.min.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/app.js"></script>
 </body>
 </html>
