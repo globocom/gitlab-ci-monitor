@@ -227,12 +227,6 @@ const app = new Vue({
       self.onError = null
       Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
-      self.pipelines.sort(function(a, b) {
-          if (self.statusPriority(a.status) != self.statusPriority(b.status)) {
-              return self.statusPriority(a.status) - self.statusPriority(b.status);
-          }
-          return a.project.localeCompare(b.project)
-      })
     },
     fetchBuild: function(p) {
       const self = this
@@ -261,9 +255,11 @@ const app = new Vue({
           const startedAt = pipeline.data.started_at
           const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
           const b = self.pipelinesMap[p.project.key]
+          const status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? "rotten" : pipeline.data.status
           if (b !== undefined) {
             b.id = pipeline.data.id
-            b.status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? "rotten" : pipeline.data.status
+            b.status = status
+            b.statusPrio = self.statusPriority(b.status)
             b.started_from_now = startedFromNow
             b.started_at = startedAt
             b.author = commit.data.author_name
@@ -273,7 +269,8 @@ const app = new Vue({
             const project = {
               project: p.project.projectName,
               id: pipeline.data.id,
-              status: Date.now() - Date.parse(startedAt) >= rottenThreshold ? "rotten" : pipeline.data.status,
+              status: status,
+              statusPrio: self.statusPriority(b.status),
               started_from_now: startedFromNow,
               started_at: startedAt,
               author: commit.data.author_name,
