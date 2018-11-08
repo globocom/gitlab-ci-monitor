@@ -259,7 +259,7 @@ const app = new Vue({
           if (b !== undefined) {
             b.id = pipeline.data.id
             b.status = status
-            b.statusPrio = self.statusPriority(b.status)
+            b.statusPrio = self.statusPriority(status)
             b.started_from_now = startedFromNow
             b.started_at = startedAt
             b.author = commit.data.author_name
@@ -270,7 +270,7 @@ const app = new Vue({
               project: p.project.projectName,
               id: pipeline.data.id,
               status: status,
-              statusPrio: self.statusPriority(b.status),
+              statusPrio: self.statusPriority(status),
               started_from_now: startedFromNow,
               started_at: startedAt,
               author: commit.data.author_name,
