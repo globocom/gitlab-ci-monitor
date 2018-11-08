@@ -141,17 +141,17 @@ const app = new Vue({
     statusPriority: function(status) {
         switch (status) {
             case "failed":
-                return 1;
+                return "a";
             case "running":
-                return 2;
+                return "b";
             case "pending":
-                return 3;
+                return "c";
             case "canceled":
-                return 4;
+                return "d";
             case "rotten":
-                return 5;
+                return "e";
             default:
-                return 6;
+                return "f";
         }
     },
     validateConfig: function() {
