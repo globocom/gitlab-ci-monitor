@@ -236,13 +236,18 @@ const app = new Vue({
           if (pipelines.data.length === 0) {
             return
           }
-          const commitId = pipelines.data[0].sha
-          const pipelineId = pipelines.data[0].id
-          axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
-            .then(function(commit) {
-              self.updateBuildInfo(p, commit, pipelineId)
-            })
-            .catch(onError.bind(self))
+          for (var i = 0; i < pipelines.data.length; i++) {
+            if (pipelines.data[i].status != 'skipped') { // find latest non-skipped build
+              const commitId = pipelines.data[0].sha
+              const pipelineId = pipelines.data[0].id
+              axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
+                .then(function(commit) {
+                  self.updateBuildInfo(p, commit, pipelineId)
+                })
+                .catch(onError.bind(self))
+              return;
+            }
+          }
         })
         .catch(onError.bind(self))
     },
