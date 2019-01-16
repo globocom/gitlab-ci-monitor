@@ -238,8 +238,8 @@ const app = new Vue({
           }
           for (var i = 0; i < pipelines.data.length; i++) {
             if (pipelines.data[i].status !== "skipped") { // find latest non-skipped build
-              const commitId = pipelines.data[0].sha
-              const pipelineId = pipelines.data[0].id
+              const commitId = pipelines.data[i].sha
+              const pipelineId = pipelines.data[i].id
               axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
                 .then(function(commit) {
                   self.updateBuildInfo(p, commit, pipelineId)
