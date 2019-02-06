@@ -139,7 +139,7 @@ const app = new Vue({
         return false;
     },
     statusPriority: function(status) {
-        const st = status.endsWith("-running") : "running" : status;
+        const st = status.endsWith("-running") ? "running" : status;
         switch (st) {
             case "failed":
                 return "a";
