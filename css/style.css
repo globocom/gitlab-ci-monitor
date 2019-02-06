@@ -42,22 +42,38 @@ body {
   background-color: #00AD68;
 }
 
+.ui.card, .ui.cards>.card.success-running {
+  background-image: linear-gradient(#00AD68, #FFFFFF);
+}
+
 .ui.card, .ui.cards>.card.failed {
   background-color: #E7484D;
+}
+
+.ui.card, .ui.cards>.card.failed-running {
+  background-image: linear-gradient(#E7484D, #FFFFFF);
 }
 
 .ui.card, .ui.cards>.card.pending {
   background-color: #e75e40;
 }
 
-.ui.card, .ui.cards>.card.running{
-  background-color: #2d9fd8;
+.ui.card, .ui.cards>.card.pending-running {
+  background-image: linear-gradient(#e75e40, #FFFFFF);
 }
 
-.ui.card, .ui.cards>.card.canceled{
+.ui.card, .ui.cards>.card.canceled {
   background-color: #aaaaaa;
 }
 
-.ui.card, .ui.cards>.card.rotten{
+.ui.card, .ui.cards>.card.canceled-running {
+  background-image: linear-gradient(#aaaaaa, #FFFFFF);
+}
+
+.ui.card, .ui.cards>.card.rotten {
   background-color: #666600;
+}
+
+.ui.card, .ui.cards>.card.rotten-running {
+  background-image: linear-gradient(#666600, #FFFFFF);
 }
