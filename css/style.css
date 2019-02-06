@@ -43,7 +43,7 @@ body {
 }
 
 .ui.card, .ui.cards>.card.success-running {
-  background-image: linear-gradient(#00AD68, #2D9FD8);
+  background-image: linear-gradient(#00AD68, #FFFFFF);
 }
 
 .ui.card, .ui.cards>.card.failed {
@@ -51,7 +51,7 @@ body {
 }
 
 .ui.card, .ui.cards>.card.failed-running {
-  background-image: linear-gradient(#E7484D, #2D9FD8);
+  background-image: linear-gradient(#E7484D, #FFFFFF);
 }
 
 .ui.card, .ui.cards>.card.pending {
@@ -59,7 +59,7 @@ body {
 }
 
 .ui.card, .ui.cards>.card.pending-running {
-  background-image: linear-gradient(#e75e40, #2D9FD8);
+  background-image: linear-gradient(#e75e40, #FFFFFF);
 }
 
 .ui.card, .ui.cards>.card.canceled {
@@ -67,7 +67,7 @@ body {
 }
 
 .ui.card, .ui.cards>.card.canceled-running {
-  background-image: linear-gradient(#AAAAAA, #2D9FD8);
+  background-image: linear-gradient(#AAAAAA, #FFFFFF);
 }
 
 .ui.card, .ui.cards>.card.rotten {
@@ -75,5 +75,5 @@ body {
 }
 
 .ui.card, .ui.cards>.card.rotten-running {
-  background-image: linear-gradient(#666600, #2D9FD8);
+  background-image: linear-gradient(#666600, #FFFFFF);
 }
