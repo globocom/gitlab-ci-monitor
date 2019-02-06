@@ -236,13 +236,15 @@ const app = new Vue({
           if (pipelines.data.length === 0) {
             return
           }
+          var running = false;
           for (var i = 0; i < pipelines.data.length; i++) {
-            if (pipelines.data[i].status !== "skipped") { // find latest non-skipped build
+            running |= pipelines.data[i].status == "running";
+            if (pipelines.data[i].status !== "skipped" && pipelines.data[i].status !== "running") { // find latest non-skipped/non-running build
               const commitId = pipelines.data[i].sha
               const pipelineId = pipelines.data[i].id
               axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
                 .then(function(commit) {
-                  self.updateBuildInfo(p, commit, pipelineId)
+                  self.updateBuildInfo(p, commit, pipelineId, running)
                 })
                 .catch(onError.bind(self))
               return;
@@ -251,7 +253,7 @@ const app = new Vue({
         })
         .catch(onError.bind(self))
     },
-    updateBuildInfo: function(p, commit, pipelineId) {
+    updateBuildInfo: function(p, commit, pipelineId, running) {
       const self = this
       const rottenThreshold = 2 * 24 * 60 * 60 * 1000; // no build since 2 days => rotten
 
@@ -265,6 +267,7 @@ const app = new Vue({
           if (b !== undefined) {
             b.id = pipeline.data.id
             b.status = status
+            b.running = running
             b.status_prio = statusPrio
             b.started_from_now = startedFromNow
             b.started_at = startedAt
@@ -276,6 +279,7 @@ const app = new Vue({
               project: p.project.projectName,
               id: pipeline.data.id,
               status: status,
+              running: running,
               status_prio: statusPrio,
               started_from_now: startedFromNow,
               started_at: startedAt,
