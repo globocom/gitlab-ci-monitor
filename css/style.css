@@ -38,42 +38,32 @@ body {
   box-shadow: none !important;
 }
 
-.ui.card, .ui.cards>.card.success {
-  background-image: linear-gradient(#00AD68, #13FFA0);
+@keyframes animation-running {
+  0% {filter: brightness(50%);}
+  50% {filter: brightness(150%);}
+  100% {filter: brightness(51%);}
 }
 
-.ui.card, .ui.cards>.card.success-running {
-  background-image: linear-gradient(#00AD68, #FFFFFF);
+.ui.card, .ui.cards>.card.running {
+  animation: animation-running 2s infinite;
+}
+
+.ui.card, .ui.cards>.card.success {
+  background-color: #00AD68;
 }
 
 .ui.card, .ui.cards>.card.failed {
-  background-image: linear-gradient(#E7484D, #EE7E82);
-}
-
-.ui.card, .ui.cards>.card.failed-running {
-  background-image: linear-gradient(#E7484D, #FFFFFF);
+  background-color: #E7484D;
 }
 
 .ui.card, .ui.cards>.card.pending {
-  background-image: linear-gradient(#E75E40, #EE8E79);
-}
-
-.ui.card, .ui.cards>.card.pending-running {
-  background-image: linear-gradient(#e75e40, #FFFFFF);
+  background-color: #E75E40;
 }
 
 .ui.card, .ui.cards>.card.canceled {
-  background-image: linear-gradient(#AAAAAA, #C3C3C3);
-}
-
-.ui.card, .ui.cards>.card.canceled-running {
-  background-image: linear-gradient(#AAAAAA, #FFFFFF);
+  background-color: #AAAAAA;
 }
 
 .ui.card, .ui.cards>.card.rotten {
-  background-image: linear-gradient(#666600, #E0E000);
-}
-
-.ui.card, .ui.cards>.card.rotten-running {
-  background-image: linear-gradient(#666600, #FFFFFF);
+  background-color: #666600;
 }
