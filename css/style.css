@@ -1,5 +1,5 @@
 body {
-  background:#3C454D;
+  background: #3C454D;
 }
 
 .logo {
@@ -13,6 +13,7 @@ body {
 .builds {
   margin: 0 50px;
 }
+
 .project-name {
   color: white !important;
   text-shadow: 1px 1px rgba(0,0,0,0.2);
@@ -22,7 +23,8 @@ body {
   color: inherit;
 }
 
-.description .title, .description a {
+.description .title,
+.description a {
   color: white !important;
   display: block;
   text-overflow: ellipsis;
@@ -30,11 +32,13 @@ body {
   white-space: nowrap;
 }
 
-.ui.card>.extra a:not(.ui):hover, .ui.cards>.card>.extra a:not(.ui):hover {
+.ui.card>.extra a:not(.ui):hover,
+.ui.cards>.card>.extra a:not(.ui):hover {
   color: rgba(0,0,0,.4);
 }
 
-.ui.card, .ui.cards>.card {
+.ui.card,
+.ui.cards>.card {
   box-shadow: none !important;
 }
 
@@ -48,22 +52,27 @@ body {
   animation: animation-running 2s infinite;
 }
 
-.ui.card, .ui.cards>.card.success {
+.ui.card,
+.ui.cards>.card.success {
   background-color: #00AD68;
 }
 
-.ui.card, .ui.cards>.card.failed {
+.ui.card,
+.ui.cards>.card.failed {
   background-color: #E7484D;
 }
 
-.ui.card, .ui.cards>.card.pending {
+.ui.card,
+.ui.cards>.card.pending {
   background-color: #E75E40;
 }
 
-.ui.card, .ui.cards>.card.canceled {
+.ui.card,
+.ui.cards>.card.canceled {
   background-color: #AAAAAA;
 }
 
-.ui.card, .ui.cards>.card.rotten {
+.ui.card,
+.ui.cards>.card.rotten {
   background-color: #666600;
 }
