@@ -17,11 +17,8 @@
       <div class="row">
         <div class="sixteen wide column">
           <div class="ui grid">
-            <div class="six wide column">
-              <div class="ui yellow message">Last updated at {{lastRun}}</div>
-            </div>
-            <div class="four wide column">
-              <img class="logo" src="images/gitlab-logo.svg"/>
+            <div class="sixteen wide column">
+              <div class="ui black mini message">Last updated at {{lastRun}}</div>
             </div>
             <div class="six wide column">
             </div>
@@ -65,7 +62,7 @@
             <div v-for="pipeline in sortedPipelines" class="card {{pipeline.status}}">
               <div class="content">
                 <div class="header project-name">
-                  <a target="_blank" title="overview of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/">{{ pipeline.project }}</a> <a target="_blank" title="file tree branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/tree/{{pipeline.branch}}">({{ pipeline.branch }})</a>
+                  <a target="_blank" title="overview of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/">{{ pipeline.project }}</a> <a target="_blank" title="file tree branch {{pipeline.branch}} of {{pipeline.project}}" href="https://{{gitlab}}/{{pipeline.project_path}}/tree/{{pipeline.branch}}"></a>
                 </div>
                 <div class="meta">{{ pipeline.author }}</div>
                 <div class="description">
