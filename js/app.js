@@ -266,5 +266,8 @@ const app = new Vue({
     }
   },
 })
+function dateFormat() {
+  return format(Date.now(), 'YYYY-MM-DD - HH:mm:ss')
+}
 
 export default app;
