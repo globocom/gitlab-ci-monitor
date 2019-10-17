@@ -2,8 +2,13 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
-module.exports = ({ mode } = { mode: 'development' }) => {
+module.exports = ({
+  mode
+} = {
+  mode: 'development'
+}) => {
   const devMode = mode !== 'production';
 
   return {
@@ -15,7 +20,10 @@ module.exports = ({ mode } = { mode: 'development' }) => {
       path: path.resolve(__dirname, 'dist')
     },
     module: {
-      rules: [
+      rules: [{
+          test: /\.vue$/,
+          loader: 'vue-loader'
+        },
         {
           test: /\.js$/,
           exclude: /(node_modules)/,
@@ -36,7 +44,13 @@ module.exports = ({ mode } = { mode: 'development' }) => {
         },
       ]
     },
+    resolve: {
+      alias: {
+        vue: 'vue/dist/vue.js'
+      },
+    },
     plugins: [
+      new VueLoaderPlugin(),
       new HtmlWebpackPlugin({
         template: './index.html',
         inject: true
@@ -45,7 +59,10 @@ module.exports = ({ mode } = { mode: 'development' }) => {
         filename: devMode ? '[name].css' : '[name].[hash].css',
         chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
       }),
-      new CopyWebpackPlugin([{ from: 'images', to: 'images' }]),
+      new CopyWebpackPlugin([{
+        from: 'images',
+        to: 'images'
+      }]),
     ],
     devServer: {
       contentBase: path.join(__dirname, 'build'),

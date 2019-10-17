@@ -283,6 +283,27 @@ const app = new Vue({
     }
   },
   computed: {
+    linkPipelineBranch(){
+      return `https://${this.gitlab}/${this.pipeline.project_path}/tree/${this.pipeline.branch}`
+    },
+    linkPipelineSha1(){
+      return `https://${this.gitlab}/${this.pipeline.project_path}/commit/${this.pipeline.sha1}`
+    },
+    linkPipelineProject(){
+      return `file tree branch ${this.pipeline.branch} of ${this.pipeline.project}`
+    },
+    linkPipelineId(){
+      return `https://${this.gitlab}/${this.pipeline.project_path}/pipelines/${this.pipeline.id}`
+    },
+    linkProjectPath(){
+      return `https://${this.gitlab}/${this.pipeline.project_path}/`
+    },
+    titlePipelineCommit(){
+      return `commit ${this.pipeline.sha1.substring(0, 8)} of branch ${this.pipeline.branch} of ${this.pipeline.project}`
+    },
+    titlePipelineId(){
+      return `pipeline ${this.pipeline.id} of ${this.pipeline.project}`
+    },
     sortedPipelines: function() {
       var self = this;
       return this.pipelines.sort(function(a,b){
