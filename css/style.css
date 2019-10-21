@@ -6,8 +6,7 @@ body {
   width: 30px;
   height: 30px;
   display: block;
-  margin: auto;
-  margin-top: 10px;
+  margin: 10px auto auto;
 }
 
 .builds {
