@@ -1,6 +1,6 @@
 # GitLab CI Monitor
+> A simple dashboard for monitoring [GitLab CI][gitlab-ci] builds.
 
-A simple dashboard for monitoring [GitLab CI][gitlab-ci] builds.
 **Alpha version**.
 
 Gitlab Support: 9.0 (API V4)
