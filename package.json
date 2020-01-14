@@ -40,12 +40,12 @@
     "jest": "^23.6.0",
     "mini-css-extract-plugin": "^0.4.3",
     "regenerator-runtime": "^0.12.1",
-    "webpack": "^4.20.2",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": ">=3.1.11"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "date-fns": "^1.29.0",
     "vue": "^1.0.27"
   },
