@@ -45,7 +45,7 @@ const app = new Vue({
     }
   },
   created: function() {
-    var self = this
+    var self = this;
     this.loadConfig()
       .then(function(){
         const error = self.validateConfig();
@@ -59,10 +59,9 @@ const app = new Vue({
         self.fetchProjects();
         self.fetchGroups();
 
-    var self = this;
-    setInterval(function() {
-      self.updateBuilds()
-  }, 60000)
+        setInterval(function() {
+          self.updateBuilds()
+        }, 60000)
       });
   },
   methods: {
