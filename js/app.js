@@ -45,23 +45,25 @@ const app = new Vue({
     }
   },
   created: function() {
+    var self = this
     this.loadConfig();
+      .then(function(){
+        const error = self.validateConfig();
+        if (error !== undefined) {
+          onError.bind(self)(error);
+          return
+        }
 
-    const error = this.validateConfig();
-    if (error !== undefined) {
-      onError.bind(this)(error);
-      return
-    }
+        self.setupDefaults();
 
-    this.setupDefaults();
-
-    this.fetchProjects();
-    this.fetchGroups();
+        self.fetchProjects();
+        self.fetchGroups();
 
     var self = this;
     setInterval(function() {
       self.updateBuilds()
   }, 60000)
+      });
   },
   methods: {
     loadConfig: function() {
@@ -78,7 +80,32 @@ const app = new Vue({
         self.blacklist = getParameterByName('blacklist').split(',')
       }
 
+      self.loadConfigGroups()
+      self.loadConfigOrder()
+
+      try {
+        return self.loadConfigProjectFromURL()
+      }
+      catch (err) {}
+
+      return Promise.resolve(
+        self.loadConfigProject()
+      )
+    },
+    loadConfigProjectFromURL: function(){
+      const self = this;
+      return (
+        axios.get(new URL(getParameterByName('projects')))
+          .then(function (response) {
+            self.repositories = response.data
+          })
+          .catch(onError.bind(self))
+      )
+    },
+    loadConfigProject: function(){
+      const self = this;
       const repositoriesParameter = getParameterByName('projects');
+
       if (repositoriesParameter != null) {
         const uniqueRepos = {};
         let repositories = repositoriesParameter.split(',').forEach(function(repo) {
@@ -116,11 +143,15 @@ const app = new Vue({
           }
         }
       }
+    },
+    loadConfigGroups: function() {
       const groupsParameter = getParameterByName('groups');
       if (groupsParameter != null) {
-        self.groups = groupsParameter.split(',')
+        this.groups = groupsParameter.split(',')
       }
-
+    },
+    loadConfigOrder: function() {
+      var self = this;
       var order = getParameterByName('order') || 'project.asc';
       self.sortFields = order.split(',').map(function(sortField){
         var splittedSortField = sortField.split('.');
