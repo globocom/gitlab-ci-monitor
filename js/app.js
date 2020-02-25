@@ -46,7 +46,7 @@ const app = new Vue({
   },
   created: function() {
     var self = this
-    this.loadConfig();
+    this.loadConfig()
       .then(function(){
         const error = self.validateConfig();
         if (error !== undefined) {
