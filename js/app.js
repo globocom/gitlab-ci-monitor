@@ -18,7 +18,7 @@ const onError = function (error) {
   }
 
   console.log(this.onError.message)
-};
+}
 
 function lastRun() {
   return format(Date.now(), 'YYYY-MM-DD - HH:mm:ss')
@@ -45,19 +45,19 @@ const app = new Vue({
     }
   },
   created: function() {
-    var self = this;
+    var self = this
     this.loadConfig()
       .then(function(){
-        const error = self.validateConfig();
+        const error = self.validateConfig()
         if (error !== undefined) {
-          onError.bind(self)(error);
+          onError.bind(self)(error)
           return
         }
 
-        self.setupDefaults();
+        self.setupDefaults()
 
-        self.fetchProjects();
-        self.fetchGroups();
+        self.fetchProjects()
+        self.fetchGroups()
 
         setInterval(function() {
           self.updateBuilds()
@@ -66,15 +66,15 @@ const app = new Vue({
   },
   methods: {
     loadConfig: function() {
-      const self = this;
-      self.gitlab = getParameterByName('gitlab');
-      self.token = getParameterByName('token');
-      self.ref = getParameterByName('ref');
-      self.blacklist = [];
-      self.repositories = [];
-      self.groups = [];
+      const self = this
+      self.gitlab = getParameterByName('gitlab')
+      self.token = getParameterByName('token')
+      self.ref = getParameterByName('ref')
+      self.blacklist = []
+      self.repositories = []
+      self.groups = []
 
-      const blacklistParameter = getParameterByName('blacklist');
+      const blacklistParameter = getParameterByName('blacklist')
       if (blacklistParameter != null) {
         self.blacklist = getParameterByName('blacklist').split(',')
       }
@@ -103,31 +103,31 @@ const app = new Vue({
     },
     loadConfigProject: function(){
       const self = this;
-      const repositoriesParameter = getParameterByName('projects');
+      const repositoriesParameter = getParameterByName('projects')
 
       if (repositoriesParameter != null) {
-        const uniqueRepos = {};
+        const uniqueRepos = {}
         let repositories = repositoriesParameter.split(',').forEach(function(repo) {
           uniqueRepos[repo.trim()] = true
-        });
-        repositories = Object.keys(uniqueRepos);
+        })
+        repositories = Object.keys(uniqueRepos)
         for (const x in repositories) {
           try {
-            const repository = repositories[x].split('/');
-            let branch, projectName, nameWithNamespace;
+            const repository = repositories[x].split('/')
+            let branch, projectName, nameWithNamespace
             if (repository.length < 3) { /* when no branch is defined */
-              branch = '';
-              projectName = repository[repository.length - 1].trim();
+              branch = ''
+              projectName = repository[repository.length - 1].trim()
               nameWithNamespace = repository.join('/')
             }
             if (repository.length == 3) { /* when a branch is defined */
-              branch = repository[repository.length - 1].trim();
-              projectName = repository[repository.length - 2].trim();
+              branch = repository[repository.length - 1].trim()
+              projectName = repository[repository.length - 2].trim()
               nameWithNamespace = repository.slice(0, repository.length - 1).join('/')
             }
             if (repository.length > 3) { /* when project are related to subgroups. defining a branch is MANDATORY */
-              branch = repository.splice(repository.length - 1, 1)[0].trim();
-              projectName = repository.splice(repository.length - 1, 1)[0].trim();
+              branch = repository.splice(repository.length - 1, 1)[0].trim()
+              projectName = repository.splice(repository.length - 1, 1)[0].trim()
               nameWithNamespace = repository.concat(projectName).join('/')
             }
 
@@ -144,16 +144,16 @@ const app = new Vue({
       }
     },
     loadConfigGroups: function() {
-      const groupsParameter = getParameterByName('groups');
+      const groupsParameter = getParameterByName('groups')
       if (groupsParameter != null) {
         this.groups = groupsParameter.split(',')
       }
     },
     loadConfigOrder: function() {
       var self = this;
-      var order = getParameterByName('order') || 'project.asc';
+      var order = getParameterByName('order') || 'project.asc'
       self.sortFields = order.split(',').map(function(sortField){
-        var splittedSortField = sortField.split('.');
+        var splittedSortField = sortField.split('.')
         return {
           field: splittedSortField[0],
           dir: splittedSortField[1] || 'asc'
@@ -162,7 +162,7 @@ const app = new Vue({
     },
     blacklisted: function(project) {
         for (var i = 0; i < this.blacklist.length; i++) {
-            if (this.blacklist[i] == project) {
+            if (this.blacklist[i] === project) {
                 return true;
             }
         }
@@ -186,38 +186,38 @@ const app = new Vue({
         }
     },
     validateConfig: function() {
-      const error = { response: { status: 500 } };
+      const error = { response: { status: 500 } }
       if (this.repositories.length === 0 && this.groups.length === 0) {
-        error.message = 'You need to set projects or groups';
+        error.message = 'You need to set projects or groups'
         return error
       } else if (this.repositories === null || this.token === null || this.gitlab === null && this.token !== 'use_cookie') {
-        error.message = 'Wrong format';
+        error.message = 'Wrong format'
         return error
       }
     },
     setupDefaults: function() {
       if (this.token !== 'use_cookie') {
-        axios.defaults.baseURL = 'https://' + this.gitlab + '/api/v4';
+        axios.defaults.baseURL = 'https://' + this.gitlab + '/api/v4'
         axios.defaults.headers.common['PRIVATE-TOKEN'] = this.token
       } else {
         // Running on the GitLab-Server...
-        axios.defaults.baseURL = '/api/v4';
+        axios.defaults.baseURL = '/api/v4'
         this.gitlab = location.hostname
       }
     },
     fetchProjects: function() {
-      const self = this;
+      const self = this
       self.repositories.forEach(function(repository) {
-        self.loading = true;
+        self.loading = true
         axios.get('/projects/' + repository.nameWithNamespace.replace(/\//g, '%2F'))
           .then(function (response) {
-            self.loading = false;
+            self.loading = false
             if (repository.branch === '') {
               repository.branch = response.data.default_branch
             }
-            const project = { project: repository, data: response.data };
+            const project = { project: repository, data: response.data }
             if (self.projects[repository.key] === undefined) {
-              self.projects[repository.key] = project;
+              self.projects[repository.key] = project
               self.fetchBuild(project)
             }
           })
@@ -225,27 +225,27 @@ const app = new Vue({
       })
     },
     fetchGroups: function() {
-      const self = this;
+      const self = this
       self.groups.forEach(function(g) {
-        self.loading = true;
+        self.loading = true
         g = encodeURIComponent(g);
         axios.get('/groups/' + g)
           .then(function (response) {
-            self.loading = false;
+            self.loading = false
             response.data.projects.forEach(function(project) {
               if (project.jobs_enabled && !project.archived && !self.blacklisted(project.name)) {
-                const branch = project.default_branch;
-                const projectName = project.name;
-                const nameWithNamespace = project.path_with_namespace;
+                const branch = project.default_branch
+                const projectName = project.name
+                const nameWithNamespace = project.path_with_namespace
                 const data = {
                   nameWithNamespace: nameWithNamespace,
                   projectName: projectName,
                   branch: branch,
                   key: nameWithNamespace + '/' + branch
-                };
-                const p = { project: data, data: project };
+                }
+                const p = { project: data, data: project }
                 if (self.projects[project.path_with_namespace] === undefined) {
-                  self.projects[project.path_with_namespace] = p;
+                  self.projects[project.path_with_namespace] = p
                   self.fetchBuild(p)
                 }
               }
@@ -254,13 +254,13 @@ const app = new Vue({
       })
     },
     updateBuilds: function() {
-      const self = this;
-      self.onError = null;
-      Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) });
+      const self = this
+      self.onError = null
+      Object.values(self.projects).forEach(function(p) { self.fetchBuild(p) })
       self.lastRun = lastRun()
     },
     fetchBuild: function(p) {
-      const self = this;
+      const self = this
 
       axios.get('/projects/' + p.data.id + '/pipelines/?ref=' + p.project.branch)
         .then(function(pipelines) {
@@ -269,15 +269,15 @@ const app = new Vue({
           }
           var running = false;
           for (var i = 0; i < pipelines.data.length; i++) {
-            running |= pipelines.data[i].status === 'running';
+            running |= pipelines.data[i].status === 'running'
             if (pipelines.data[i].status !== 'skipped' && pipelines.data[i].status !== 'running') { // find latest non-skipped/non-running build
-              const commitId = pipelines.data[i].sha;
-              const pipelineId = pipelines.data[i].id;
+              const commitId = pipelines.data[i].sha
+              const pipelineId = pipelines.data[i].id
               axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
                 .then(function(commit) {
                   self.updateBuildInfo(p, commit, pipelineId, running)
                 })
-                .catch(onError.bind(self));
+                .catch(onError.bind(self))
               return;
             }
           }
@@ -285,24 +285,24 @@ const app = new Vue({
         .catch(onError.bind(self))
     },
     updateBuildInfo: function(p, commit, pipelineId, running) {
-      const self = this;
+      const self = this
       const rottenThreshold = 2 * 24 * 60 * 60 * 1000; // no build since 2 days => rotten
 
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
-          const startedAt = pipeline.data.started_at;
-          const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true });
-          const b = self.pipelinesMap[p.project.key];
-          const status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? 'rotten' : pipeline.data.status + (running ? ' running' : '');
-          const statusPrio = self.statusPriority(status);
+          const startedAt = pipeline.data.started_at
+          const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
+          const b = self.pipelinesMap[p.project.key]
+          const status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? 'rotten' : pipeline.data.status + (running ? ' running' : '')
+          const statusPrio = self.statusPriority(status)
           if (b !== undefined) {
-            b.id = pipeline.data.id;
-            b.status = status;
-            b.status_prio = statusPrio;
-            b.started_from_now = startedFromNow;
-            b.started_at = startedAt;
-            b.author = commit.data.author_name;
-            b.title = commit.data.title;
+            b.id = pipeline.data.id
+            b.status = status
+            b.status_prio = statusPrio
+            b.started_from_now = startedFromNow
+            b.started_at = startedAt
+            b.author = commit.data.author_name
+            b.title = commit.data.title
             b.sha1 = commit.data.id
           } else {
             const project = {
@@ -317,8 +317,8 @@ const app = new Vue({
               branch: p.project.branch,
               title: commit.data.title,
               sha1: commit.data.id
-            };
-            self.pipelines.push(project);
+            }
+            self.pipelines.push(project)
             self.pipelinesMap[p.project.key] = project
           }
         })
@@ -333,11 +333,11 @@ const app = new Vue({
         self.sortFields.forEach(function(sortField){
           if (result == 0)
             result = a[sortField.field].localeCompare(b[sortField.field]) * (sortField.dir == 'desc' ? -1 : 1)
-        });
+        })
         return result
       })
     }
   },
-});
+})
 
 export default app;

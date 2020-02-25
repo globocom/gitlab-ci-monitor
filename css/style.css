@@ -48,10 +48,6 @@ body {
   100% {filter: brightness(51%);}
 }
 
-.ui.card, .ui.cards>.card.running {
-  animation: animation-running 2s infinite;
-}
-
 .ui.card,
 .ui.cards>.card.success {
   background-color: #00AD68;
@@ -64,12 +60,17 @@ body {
 
 .ui.card,
 .ui.cards>.card.pending {
-  background-color: #E75E40;
+  background-color: #e75e40;
+}
+
+.ui.card,
+.ui.cards>.card.running {
+  animation: animation-running 2s infinite;
 }
 
 .ui.card,
 .ui.cards>.card.canceled {
-  background-color: #AAAAAA;
+  background-color: #aaaaaa;
 }
 
 .ui.card,
