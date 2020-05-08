@@ -42,12 +42,6 @@ body {
   box-shadow: none !important;
 }
 
-@keyframes animation-running {
-  0% {filter: brightness(50%);}
-  50% {filter: brightness(150%);}
-  100% {filter: brightness(51%);}
-}
-
 .ui.card,
 .ui.cards>.card.success {
   background-color: #00AD68;
@@ -65,7 +59,7 @@ body {
 
 .ui.card,
 .ui.cards>.card.running {
-  animation: animation-running 2s infinite;
+  background-color: #2d9fd8;
 }
 
 .ui.card,
