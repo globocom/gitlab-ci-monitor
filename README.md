@@ -1,4 +1,4 @@
-# GitLab CI Monitor
+# GitLab CI Monitor 
 
 A simple dashboard for monitoring [GitLab CI][gitlab-ci] builds.
 **Alpha version**.
@@ -15,7 +15,7 @@ Gitlab Support: 9.0 (API V4)
 
 ## Usage
 
-This project runs completely in the browser. It expects a few parameters
+This project runs completely online in the  browser only. It expects a few parameters
 in the query string:
 
 - **gitlab**: your gitlab server address (not needed if you deployed the monitor on the gitlab instance)
