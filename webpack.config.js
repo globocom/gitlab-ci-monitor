@@ -32,7 +32,9 @@ module.exports = ({ mode } = { mode: 'development' }) => {
         },
         {
           test: /\.(png|jpg|gif|svg)$/,
-          loader: 'file-loader?name=images/[name].[ext]'
+          use: [
+          { loader: 'file-loader?name=images/[name].[ext]'}
+          ]
         },
       ]
     },
@@ -45,7 +47,8 @@ module.exports = ({ mode } = { mode: 'development' }) => {
         filename: devMode ? '[name].css' : '[name].[hash].css',
         chunkFilename: devMode ? '[id].css' : '[id].[hash].css'
       }),
-      new CopyWebpackPlugin([{ from: 'images', to: 'images' }]),
+      new CopyWebpackPlugin({
+      patterns: [ { from: 'images', to: 'images' } ]}),
     ],
     devServer: {
       contentBase: path.join(__dirname, 'build'),
