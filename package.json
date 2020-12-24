@@ -32,7 +32,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.7.1",
     "babel-loader": "^8.0.4",
-    "copy-webpack-plugin": "^4.5.2",
+    "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^1.0.0",
     "eslint": "^5.6.1",
     "file-loader": "^2.0.0",
