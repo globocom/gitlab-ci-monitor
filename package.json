@@ -45,7 +45,7 @@
     "webpack-dev-server": ">=3.1.11"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "date-fns": "^1.29.0",
     "vue": "^1.0.27"
   },
