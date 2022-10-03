@@ -77,7 +77,10 @@ nginx['custom_gitlab_server_config'] = <<-NGINX_CONF
 }
 NGINX_CONF
 ```
-* Run `gitlab-ctl reconfigure`
+* Run
+```sh
+gitlab-ctl reconfigure
+```
 * Now you may use the monitor without providing the parameter `gitlab` and set `token=use_cookie`
 
 
