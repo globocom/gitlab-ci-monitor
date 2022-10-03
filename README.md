@@ -55,7 +55,7 @@ of the default branch of all projects in groups group1, base/group2 and group3.
 ## Installation on a GitLab instance
 
 * Download and unpack to a directory of your choice:
-```
+```sh
 rm -rf /usr/local/share/gitlab/monitor
 mkdir -p /usr/local/share/gitlab/monitor
 curl -s -L https://github.com/globocom/gitlab-ci-monitor/archive/master.tar.gz | tar xz -C /usr/local/share/gitlab/monitor --strip-components=1
@@ -63,12 +63,12 @@ curl -s -L https://github.com/globocom/gitlab-ci-monitor/archive/master.tar.gz |
 
 or
 
-```
+```sh
 make install
 ```
 
 * Now insert the following to your `/etc/gitlab/gitlab.rb` (the entry already exists but it commented):
-```
+```ruby
 nginx['custom_gitlab_server_config'] = <<-NGINX_CONF
   location /_internal/monitor/ {
     index index.html;
@@ -77,7 +77,10 @@ nginx['custom_gitlab_server_config'] = <<-NGINX_CONF
 }
 NGINX_CONF
 ```
-* Run `gitlab-ctl reconfigure`
+* Run
+```sh
+gitlab-ctl reconfigure
+```
 * Now you may use the monitor without providing the parameter `gitlab` and set `token=use_cookie`
 
 
