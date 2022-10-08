@@ -48,6 +48,8 @@ module.exports = ({ mode } = { mode: 'development' }) => {
       new CopyWebpackPlugin([{ from: 'images', to: 'images' }]),
     ],
     devServer: {
+      host: '0.0.0.0',
+      disableHostCheck: true,
       contentBase: path.join(__dirname, 'build'),
       compress: true
     }

@@ -66,3 +66,8 @@ body {
 .ui.cards>.card.canceled {
   background-color: #aaaaaa;
 }
+
+.ui.card,
+.ui.cards>.card.rotten {
+  background-color: #666600;
+}

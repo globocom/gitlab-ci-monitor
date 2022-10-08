@@ -70,8 +70,14 @@ const app = new Vue({
       self.gitlab = getParameterByName('gitlab')
       self.token = getParameterByName('token')
       self.ref = getParameterByName('ref')
+      self.blacklist = []
       self.repositories = []
       self.groups = []
+
+      const blacklistParameter = getParameterByName('blacklist')
+      if (blacklistParameter != null) {
+        self.blacklist = getParameterByName('blacklist').split(',')
+      }
 
       self.loadConfigGroups()
       self.loadConfigOrder()
@@ -154,6 +160,31 @@ const app = new Vue({
         }
       })
     },
+    blacklisted: function(project) {
+        for (var i = 0; i < this.blacklist.length; i++) {
+            if (this.blacklist[i] === project) {
+                return true;
+            }
+        }
+        return false;
+    },
+    statusPriority: function(status) {
+        const st = status.endsWith(' running') ? 'running' : status;
+        switch (st) {
+            case 'failed':
+                return 'a';
+            case 'running':
+                return 'b';
+            case 'pending':
+                return 'c';
+            case 'canceled':
+                return 'd';
+            case 'rotten':
+                return 'e';
+            default:
+                return 'f';
+        }
+    },
     validateConfig: function() {
       const error = { response: { status: 500 } }
       if (this.repositories.length === 0 && this.groups.length === 0) {
@@ -202,7 +233,7 @@ const app = new Vue({
           .then(function (response) {
             self.loading = false
             response.data.projects.forEach(function(project) {
-              if (project.jobs_enabled && !project.archived) {
+              if (project.jobs_enabled && !project.archived && !self.blacklisted(project.name)) {
                 const branch = project.default_branch
                 const projectName = project.name
                 const nameWithNamespace = project.path_with_namespace
@@ -236,27 +267,38 @@ const app = new Vue({
           if (pipelines.data.length === 0) {
             return
           }
-          const commitId = pipelines.data[0].sha
-          const pipelineId = pipelines.data[0].id
-          axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
-            .then(function(commit) {
-              self.updateBuildInfo(p, commit, pipelineId)
-            })
-            .catch(onError.bind(self))
+          var running = false;
+          for (var i = 0; i < pipelines.data.length; i++) {
+            running |= pipelines.data[i].status === 'running'
+            if (pipelines.data[i].status !== 'skipped' && pipelines.data[i].status !== 'running') { // find latest non-skipped/non-running build
+              const commitId = pipelines.data[i].sha
+              const pipelineId = pipelines.data[i].id
+              axios.get('/projects/' + p.data.id + '/repository/commits/' + commitId)
+                .then(function(commit) {
+                  self.updateBuildInfo(p, commit, pipelineId, running)
+                })
+                .catch(onError.bind(self))
+              return;
+            }
+          }
         })
         .catch(onError.bind(self))
     },
-    updateBuildInfo: function(p, commit, pipelineId) {
+    updateBuildInfo: function(p, commit, pipelineId, running) {
       const self = this
+      const rottenThreshold = 2 * 24 * 60 * 60 * 1000; // no build since 2 days => rotten
 
       axios.get('/projects/' + p.data.id + '/pipelines/' + pipelineId)
         .then(function(pipeline) {
           const startedAt = pipeline.data.started_at
           const startedFromNow = distanceInWordsToNow(startedAt, { addSuffix: true })
           const b = self.pipelinesMap[p.project.key]
+          const status = Date.now() - Date.parse(startedAt) >= rottenThreshold ? 'rotten' : pipeline.data.status + (running ? ' running' : '')
+          const statusPrio = self.statusPriority(status)
           if (b !== undefined) {
             b.id = pipeline.data.id
-            b.status = pipeline.data.status
+            b.status = status
+            b.status_prio = statusPrio
             b.started_from_now = startedFromNow
             b.started_at = startedAt
             b.author = commit.data.author_name
@@ -266,7 +308,8 @@ const app = new Vue({
             const project = {
               project: p.project.projectName,
               id: pipeline.data.id,
-              status: pipeline.data.status,
+              status: status,
+              status_prio: statusPrio,
               started_from_now: startedFromNow,
               started_at: startedAt,
               author: commit.data.author_name,
