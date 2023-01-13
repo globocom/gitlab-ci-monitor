@@ -41,7 +41,7 @@
     "mini-css-extract-plugin": "^0.4.3",
     "regenerator-runtime": "^0.12.1",
     "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
+    "webpack-cli": "^3.3.12",
     "webpack-dev-server": ">=3.1.11"
   },
   "dependencies": {
